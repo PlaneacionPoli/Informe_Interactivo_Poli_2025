@@ -1,579 +1,862 @@
-<!DOCTYPE html><html lang="es"><head>
+<!DOCTYPE html>
+<html lang="es">
+<head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Informe de Cierre PDI 2025 — Planeación y Gestión Institucional</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script src="./data-bundle.js"></script>
 <style>
+/* === Reset === */
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;height:100vh;display:flex;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:rgba(15,56,90,0.3);border-radius:4px;}
+
+/* === Variables === */
+:root{
+  --navy:#0F385A;--cyan:#1FB2DE;--pink:#EC0677;
+  --green:#A6CE38;--yellow:#FBAF17;--teal:#15BECE;
+}
+
+/* === Sidebar nav === */
 #snav{position:fixed;left:0;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(15,56,90,0.95);backdrop-filter:blur(10px);border-radius:0 12px 12px 0;border:1px solid rgba(31,178,222,0.3);border-left:none;z-index:300;}
 #snav button{background:rgba(31,178,222,0.15);border:1px solid rgba(31,178,222,0.4);color:white;width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:0.95em;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
 #snav button:hover{background:rgba(31,178,222,0.45);border-color:#1FB2DE;}
 #snav button:disabled{opacity:0.2;cursor:default;}
+
+/* === Layout === */
 #main{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
 .slide{display:none;position:absolute;inset:0;align-items:center;justify-content:center;}
 .slide.active{display:flex;animation:fi 0.3s ease;}
 @keyframes fi{from{opacity:0;transform:scale(0.97)}to{opacity:1;transform:scale(1)}}
 .sf{width:min(100vw,calc(100vh*16/9));height:100vh;max-height:100vh;position:relative;overflow:hidden;background:white;}
-::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-thumb{background:rgba(15,56,90,0.3);border-radius:4px;}
+
+/* === Home buttons === */
+.btn-nav{border:none;border-radius:10px;padding:10px 8px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s;}
+.btn-nav:hover{transform:scale(1.04);}
+
+/* ===================================================================
+   ESFERA: blanca, centro medido px=(316,325)=44%,44% en 721×735
+   Banda scrolling con fondo BLANCO → movimiento visible sin efecto moneda
+   =================================================================== */
+.esfera{
+  position:absolute;
+  left:51.9%;top:47.9%;          /* centro px=(374,352) en 721×735 */
+  transform:translate(-50%,-50%);
+  width:28%;aspect-ratio:1/1;
+  border-radius:50%;
+  overflow:hidden;
+  /* Gradiente base: blanco puro → gris claro → gris medio (efecto esférico 3D) */
+  background:radial-gradient(circle at 38% 32%,#ffffff 0%,#f2eff2 38%,#d0cdd0 75%,#b8b5b8 100%);
+  box-shadow:
+    inset 0 -8px 18px rgba(0,30,80,0.1),
+    inset 3px 3px 10px rgba(255,255,255,0.9),
+    0 5px 18px rgba(0,0,0,0.18),
+    0 0 0 2px rgba(255,255,255,0.95);
+  z-index:3;
+}
+/* Banda de 3 caras que scrollea — es lo que da apariencia de esfera (no disco):
+   el CONTENIDO se mueve bajo una luz FIJA = efecto esfera girando */
+.esfera-banda{
+  position:absolute;top:0;left:0;height:100%;
+  width:300%;
+  display:flex;
+  animation:girar-esfera 8s linear infinite;
+}
+.esfera-cara{
+  flex:1;height:100%;
+  /* Igual al color interior del círculo de Comunidad.png: R=245 G=241 B=244 */
+  background:#f5f1f4;
+  overflow:hidden;
+  position:relative;
+}
+/* Comunidad.png tiene fondo transparente — no necesita blend mode.
+   Escala al 160% para que el círculo ocupe ~87% del diámetro de la esfera */
+.cara-icon img{
+  position:absolute;
+  width:160%;height:auto;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+}
+/* logo-poli.jpg es 1225×596 (muy landscape) — contain para ver completo,
+   multiply elimina el fondo blanco del JPG */
+.cara-logo img{
+  position:absolute;
+  width:88%;height:auto;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  mix-blend-mode:multiply;
+}
+/* Sombra de curvatura en bordes — FIJA, da la ilusión de profundidad esférica */
+.esfera-curva{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 36%,rgba(0,20,60,0.14) 58%,rgba(0,20,60,0.50) 82%,rgba(0,20,60,0.68) 100%),
+    radial-gradient(ellipse 28% 100% at 0%   50%,rgba(0,20,60,0.18) 0%,transparent 100%),
+    radial-gradient(ellipse 28% 100% at 100% 50%,rgba(0,20,60,0.10) 0%,transparent 100%),
+    radial-gradient(ellipse 100% 22% at 50% 100%,rgba(0,20,60,0.18) 0%,transparent 100%);
+  z-index:2;pointer-events:none;
+}
+/* Reflejo especular FIJO en arriba-izquierda — luz real no rota con la esfera */
+.esfera-luz{
+  position:absolute;
+  width:32%;height:26%;
+  top:7%;left:9%;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(255,255,255,0.96) 0%,rgba(255,255,255,0.65) 35%,transparent 68%);
+  pointer-events:none;z-index:4;
+}
+@keyframes girar-esfera{
+  from{transform:translateX(0%)}
+  to  {transform:translateX(-66.66%)}
+}
+
+/* === Animated bars === */
+.bar-row{display:flex;align-items:center;gap:10px;margin:4px 0;}
+.bar-label{font-size:0.65em;font-weight:800;color:#555;text-transform:uppercase;width:110px;flex-shrink:0;text-align:right;}
+.bar-track{background:rgba(0,0,0,0.08);border-radius:8px;height:18px;overflow:hidden;flex:1;}
+.bar-fill{height:100%;border-radius:8px;width:0%;transition:width 0.9s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;}
+.bar-fill span{color:white;font-size:0.68em;font-weight:900;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,0.3);}
+
+/* === Gauge row === */
+.gauge-row{display:flex;justify-content:center;gap:24px;flex-shrink:0;border-bottom:2px solid #eef2f7;padding:16px 24px;background:white;}
+
+/* === Dark slide header === */
+.sh-dark{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:13px 22px;}
+.sh-dark span.tt{color:white;font-weight:900;font-size:clamp(11px,1.6vw,21px);text-transform:uppercase;letter-spacing:1px;}
+
+/* === Heatmap === */
+.hm-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:5px;align-items:center;}
+.hm-head{font-size:0.68em;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:0.5px;padding:6px 10px;text-align:center;border-radius:6px;}
+.hm-name{font-size:0.78em;font-weight:800;color:var(--navy);padding:6px 8px;}
+.hm-cell{border-radius:8px;padding:8px 6px;text-align:center;font-weight:900;font-size:0.85em;}
+
+/* === Timeline === */
+.tl-bar-wrap{display:flex;align-items:center;gap:8px;margin:3px 0;}
+.tl-label{font-size:0.62em;font-weight:700;color:#555;width:180px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tl-track{flex:1;background:#eef2f7;border-radius:6px;height:14px;overflow:hidden;}
+.tl-fill{height:100%;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:5px;transition:width 0.8s ease;}
+.tl-fill span{color:white;font-size:0.6em;font-weight:900;white-space:nowrap;}
+.tl-pct{font-size:0.6em;font-weight:900;width:30px;text-align:right;flex-shrink:0;}
+.toggle-btns{display:flex;gap:6px;margin-left:auto;}
+.toggle-btns button{border:2px solid #ccc;background:white;color:#555;border-radius:8px;padding:5px 14px;cursor:pointer;font-family:inherit;font-weight:700;font-size:0.72em;transition:all 0.15s;}
+.toggle-btns button.active{background:var(--navy);color:white;border-color:var(--navy);}
 </style>
-</head><body>
+</head>
+<body>
+
 <div id="snav">
   <button id="btn-home" onclick="goHome()" disabled title="Inicio">🏠</button>
   <button id="btn-back" onclick="goBack()" disabled title="Volver">←</button>
 </div>
-<div id="main">
-<div class="slide active" id="slide-home" data-title="Inicio">
-<div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">
 
-  <div style="padding:10px 20px 8px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;">
+<div id="main">
+
+<!-- ===== HOME ===== -->
+<div class="slide active" id="slide-home" data-title="Inicio">
+<div class="sf" style="display:flex;flex-direction:column;overflow:hidden;">
+
+  <div style="padding:10px 20px 8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;">
     <div style="text-align:center;">
-      <div style="color:#0F385A;font-size:clamp(16px,2.2vw,30px);font-weight:900;text-transform:uppercase;letter-spacing:2px;" id="home-title">Informe de Cierre PDI 2025</div>
-      <div style="color:#1FB2DE;font-size:clamp(8px,0.78vw,11px);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:2px;" id="home-subtitle">Planeación y Gestión Institucional</div>
+      <div style="color:var(--navy);font-size:clamp(16px,2.2vw,30px);font-weight:900;text-transform:uppercase;letter-spacing:2px;" id="home-title">Informe de Cierre PDI 2025</div>
+      <div style="color:var(--cyan);font-size:clamp(8px,0.78vw,11px);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:2px;" id="home-subtitle">Planeación y Gestión Institucional</div>
     </div>
     <img src="./public/img/brand/logo-poli.jpg" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);height:54px;object-fit:contain;">
   </div>
 
-  <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:4px 8px 8px;min-height:0;overflow:hidden;">
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:4px 12px 8px;min-height:0;overflow:hidden;">
 
     <!-- LEFT: 3 buttons -->
-    <div style="width:152px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;height:min(calc(100vh - 108px),370px);">
-      <button onclick="goTo('ciclo')" style="background:#EC0677;color:white;border:none;border-radius:10px;padding:8px 7px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s" onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">Ciclo de la<br>Estrategia</button>
-      <button onclick="goTo('avances')" style="background:#A6CE38;color:#0F385A;border:none;border-radius:10px;padding:8px 7px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s" onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">Avance Líneas<br>Estratégicas</button>
-      <button onclick="goTo('logros')" style="background:#1FB2DE;color:#0F385A;border:none;border-radius:10px;padding:8px 7px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s" onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">Logros por<br>Línea Estratégica</button>
+    <div style="width:150px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;height:min(calc(100vh - 108px),460px);">
+      <button onclick="goTo('ciclo')"   class="btn-nav" style="background:var(--pink);color:white;">Ciclo de la<br>Estrategia</button>
+      <button onclick="goTo('avances')" class="btn-nav" style="background:var(--green);color:var(--navy);">Avance Líneas<br>Estratégicas</button>
+      <button onclick="goTo('logros')"  class="btn-nav" style="background:var(--cyan);color:var(--navy);">Logros por<br>Línea Estratégica</button>
     </div>
 
-    <!-- CENTER: integrated flower diagram + sphere -->
-    <div style="position:relative;height:min(calc(100vh - 108px),370px);aspect-ratio:1225/735;flex-shrink:0;">
-      <img src="./public/img/brand/lineas-estrategicas.jpg" style="width:100%;height:100%;object-fit:contain;">
-      <div style="position:absolute;left:35.5%;top:50.1%;transform:translate(-50%,-50%);width:17%;aspect-ratio:1/1;border-radius:50%;background:white;z-index:1;"></div>
-      <div id="esfera3d" style="position:absolute;left:35.5%;top:50.1%;transform:translate(-50%,-50%);width:17%;aspect-ratio:1/1;border-radius:50%;overflow:hidden;background:transparent;z-index:2;"></div>
-      <svg viewBox="0 0 1225 735" style="position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;">
-        <ellipse cx="123" ry="180" cy="303" rx="100" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('cal-avance')"/>
-        <ellipse cx="1038" ry="117" cy="236" rx="170" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('exp-avance')"/>
-        <ellipse cx="327" ry="69" cy="605" rx="175" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('edu-avance')"/>
-        <ellipse cx="1008" ry="105" cy="487" rx="162" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('exp2-avance')"/>
-        <ellipse cx="784" ry="200" cy="656" rx="146" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('to-avance')"/>
-        <ellipse cx="830" ry="200" cy="12" rx="127" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('sos-avance')"/>
+    <!-- CENTER: flower diagram + esfera giratoria -->
+    <div style="position:relative;height:min(calc(100vh - 108px),460px);aspect-ratio:721/735;flex-shrink:0;">
+      <img src="./public/img/brand/lineas-estrategicas.jpg" style="width:100%;height:100%;">
+      <!-- Círculo blanco cubre ícono original (centro medido px=(374,352)=51.9%×47.9%) -->
+      <svg viewBox="0 0 721 735" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;">
+        <circle cx="374" cy="352" r="105" fill="white"/>
+      </svg>
+      <!-- Esfera: Comunidad (frente) → Logo Poli (dorso) → Comunidad (loop) -->
+      <div class="esfera">
+        <div class="esfera-banda">
+          <div class="esfera-cara cara-icon"><img src="./PDI/Comunidad.png" alt="Comunidad Universitaria"></div>
+          <div class="esfera-cara cara-logo"><img src="./public/img/brand/logo-poli.jpg" alt="Logo Poli"></div>
+          <div class="esfera-cara cara-icon"><img src="./PDI/Comunidad.png" alt="Comunidad Universitaria"></div>
+        </div>
+        <div class="esfera-curva"></div>
+        <div class="esfera-luz"></div>
+      </div>
+      <!-- Petales clickeables — coords escaladas a 721×735 -->
+      <svg viewBox="0 0 721 735" style="position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;">
+        <ellipse cx="72"  ry="180" cy="303" rx="59"  fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('cal-avance')"/>
+        <ellipse cx="611" ry="117" cy="236" rx="100" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('exp-avance')"/>
+        <ellipse cx="193" ry="69"  cy="605" rx="103" fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('edu-avance')"/>
+        <ellipse cx="594" ry="105" cy="487" rx="95"  fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('exp2-avance')"/>
+        <ellipse cx="462" ry="200" cy="656" rx="86"  fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('to-avance')"/>
+        <ellipse cx="489" ry="200" cy="12"  rx="75"  fill="rgba(0,0,0,0.001)" style="cursor:pointer;pointer-events:all" onclick="goTo('sos-avance')"/>
       </svg>
     </div>
 
     <!-- RIGHT: 4 buttons -->
-    <div style="width:152px;flex-shrink:0;display:flex;flex-direction:column;gap:6px;height:min(calc(100vh - 108px),370px);">
-      <button onclick="goTo('planes')" style="background:#0F385A;color:white;border:none;border-radius:10px;padding:8px 7px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s" onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">Planes Anuales<br>de Retos</button>
-      <button onclick="goTo('proyectos')" style="background:#42F2F2;color:#0F385A;border:none;border-radius:10px;padding:8px 7px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s" onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">Proyectos<br>Estratégicos</button>
-      <button onclick="goTo('balance')" style="background:#15BECE;color:#0F385A;border:none;border-radius:10px;padding:8px 7px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s" onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">Balance<br>Institucional</button>
-      <button onclick="goTo('orgullosamente')" style="background:#FBAF17;color:#0F385A;border:none;border-radius:10px;padding:8px 7px;cursor:pointer;font-family:inherit;font-weight:800;font-size:clamp(10px,0.9vw,13px);letter-spacing:0.3px;text-transform:uppercase;line-height:1.4;text-align:center;width:100%;flex:1;min-height:0;box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:transform 0.15s" onmouseenter="this.style.transform='scale(1.04)'" onmouseleave="this.style.transform='scale(1)'">Orgullosamente<br>Poli</button>
+    <div style="width:150px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;height:min(calc(100vh - 108px),460px);">
+      <button onclick="goTo('planes')"        class="btn-nav" style="background:var(--navy);color:white;">Planes Anuales<br>de Retos</button>
+      <button onclick="goTo('proyectos')"     class="btn-nav" style="background:#42F2F2;color:var(--navy);">Proyectos<br>Estratégicos</button>
+      <button onclick="goTo('balance')"       class="btn-nav" style="background:var(--teal);color:var(--navy);">Balance<br>Institucional</button>
+      <button onclick="goTo('orgullosamente')"class="btn-nav" style="background:var(--yellow);color:var(--navy);">Orgullosamente<br>Poli</button>
     </div>
 
   </div>
 </div>
+</div><!-- /HOME -->
+
+</div><!-- /#main -->
 
 <script>
-(function() {
+(function () {
   var D = window.PDI_DATA;
-  if(!D){document.getElementById('main').innerHTML='<div style="padding:40px;text-align:center"><h1>Error</h1><p>No se encontro data-bundle.js</p></div>';return;}
-  
-  var cfg={};(D.config||[]).forEach(function(r){if(r.seccion==='general'||r.seccion==='branding')cfg[r.clave]=r.valor;});
-  var avance=D.avance||[];
-  var foda=D.foda||[];
-  var pestel=D.pestel||[];
-  var nav=D.navegacion||[];
-  var proy=D.proyectos||[];
-  var obj=D.objetivos||[];
-  var reportes=D.reportes||[];
-  var unidades=D.unidades||[];
-  var paleta={};(D.config||[]).forEach(function(r){if(r.seccion==='paleta')paleta[r.clave]=r.valor;});
-  
-  var colorMap={'calidad':paleta.pink||'#EC0677','educacion':paleta.navy||'#0F385A','expansion':paleta.yellow||'#FBAF17','experiencia':paleta.cyan||'#1FB2DE','transformacion':paleta.teal||'#15BECE','sostenibilidad':paleta.green||'#A6CE38'};
-  var iconMap={'calidad':'🏅','educacion':'📚','expansion':'📈','experiencia':'⭐','transformacion':'🔄','sostenibilidad':'🌱'};
-  var lineNameMap={'calidad':'Calidad','educacion':'Educación para Toda la Vida','expansion':'Expansión','experiencia':'Experiencia','transformacion':'Transformación Organizacional','sostenibilidad':'Sostenibilidad'};
-  
-  var avMap={};
-  avance.forEach(function(a){avMap[a.id]=a;});
-  
-  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-  function gauge(pct,color,label){
-    var c=Math.round(pct*2.39);
-    return '<svg viewBox="0 0 100 100" style="width:80px;height:80px"><circle cx="50" cy="50" r="38" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="8"/><circle cx="50" cy="50" r="38" fill="none" stroke="'+esc(color)+'" stroke-width="8" stroke-dasharray="'+c+' 239" stroke-linecap="round" transform="rotate(-90 50 50)"/><text x="50" y="46" text-anchor="middle" font-size="18" font-weight="900" fill="#0F385A" font-family="Montserrat,sans-serif">'+pct+'%</text><text x="50" y="60" text-anchor="middle" font-size="8" font-weight="700" fill="#666" font-family="Montserrat,sans-serif">'+esc(label)+'</text></svg>';
+  if (!D) {
+    document.getElementById('main').innerHTML = '<div style="padding:40px;text-align:center"><h1>Error</h1><p>No se encontró data-bundle.js</p></div>';
+    return;
   }
-  
-  var h='';
-  
+
+  /* ── datos ── */
+  var cfg = {};
+  (D.config || []).forEach(function (r) {
+    if (r.seccion === 'general' || r.seccion === 'branding') cfg[r.clave] = r.valor;
+  });
+  var paleta = {};
+  (D.config || []).forEach(function (r) {
+    if (r.seccion === 'paleta') paleta[r.clave] = r.valor;
+  });
+  var avance   = D.avance    || [];
+  var foda     = D.foda      || [];
+  var pestel   = D.pestel    || [];
+  var proy     = D.proyectos || [];
+  var obj      = D.objetivos || [];
+  var unidades = D.unidades  || [];
+
+  var avMap = {};
+  avance.forEach(function (a) { avMap[a.id] = a; });
+
+  var colorMap = {
+    calidad:        paleta.pink   || '#EC0677',
+    educacion:      paleta.navy   || '#0F385A',
+    expansion:      paleta.yellow || '#FBAF17',
+    experiencia:    paleta.cyan   || '#1FB2DE',
+    transformacion: paleta.teal   || '#15BECE',
+    sostenibilidad: paleta.green  || '#A6CE38'
+  };
+  var lineNameMap = {
+    calidad: 'Calidad',
+    educacion: 'Educación para Toda la Vida',
+    expansion: 'Expansión',
+    experiencia: 'Experiencia',
+    transformacion: 'Transformación Organizacional',
+    sostenibilidad: 'Sostenibilidad'
+  };
+
+  var lineIds       = ['calidad','educacion','expansion','experiencia','transformacion','sostenibilidad'];
+  var slideSuffixes = ['cal-avance','edu-avance','exp-avance','exp2-avance','to-avance','sos-avance'];
+  var lineColors    = [
+    paleta.pink   || '#EC0677',
+    paleta.navy   || '#0F385A',
+    paleta.yellow || '#FBAF17',
+    paleta.cyan   || '#1FB2DE',
+    paleta.teal   || '#15BECE',
+    paleta.green  || '#A6CE38'
+  ];
+  var lineNames = [
+    'Calidad','Educación para Toda la Vida','Expansión',
+    'Experiencia','Transformación Organizacional','Sostenibilidad'
+  ];
+
+  /* ── helpers ── */
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function gauge(pct, color, label) {
+    var c = Math.round(pct * 2.39);
+    return '<svg viewBox="0 0 100 100" style="width:80px;height:80px">'
+      + '<circle cx="50" cy="50" r="38" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="8"/>'
+      + '<circle cx="50" cy="50" r="38" fill="none" stroke="'+esc(color)+'" stroke-width="8"'
+      + ' stroke-dasharray="'+c+' 239" stroke-linecap="round" transform="rotate(-90 50 50)"/>'
+      + '<text x="50" y="46" text-anchor="middle" font-size="18" font-weight="900" fill="#0F385A" font-family="Montserrat,sans-serif">'+pct+'%</text>'
+      + '<text x="50" y="60" text-anchor="middle" font-size="8"  font-weight="700" fill="#666"   font-family="Montserrat,sans-serif">'+esc(label)+'</text>'
+      + '</svg>';
+  }
+  function barRow(label, pct, color) {
+    return '<div class="bar-row">'
+      + '<div class="bar-label">'+esc(label)+'</div>'
+      + '<div class="bar-track"><div class="bar-fill" data-pct="'+pct+'" style="background:'+esc(color)+'"><span>'+pct+'%</span></div></div>'
+      + '</div>';
+  }
+  function heatColor(pct) {
+    if (pct >= 95) return '#A6CE38';
+    if (pct >= 85) return '#1FB2DE';
+    if (pct >= 70) return '#FBAF17';
+    return '#EC0677';
+  }
+  function heatTextColor(pct) {
+    return (pct < 80) ? 'white' : '#0F385A';
+  }
+
+  /* ── generador HTML ── */
+  var h = '';
+
   /* ===== CICLO ===== */
-  h+='<div class="slide" id="slide-ciclo" data-title="Ciclo de la Estrategia"><div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
-  h+='<div style="padding:10px 24px 4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;"><span style="font-weight:900;font-size:clamp(15px,2vw,28px);color:#0F385A;text-transform:uppercase;letter-spacing:3px;">Ciclo de la Estrategia</span><img src="./public/img/brand/logo-poli.jpg" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);height:46px;object-fit:contain;"></div>';
-  h+='<div style="width:55px;height:3px;background:#1FB2DE;border-radius:2px;margin:0 auto 2px;flex-shrink:0;"></div>';
-  h+='<div style="flex:1;display:flex;flex-direction:column;padding:4px 16px 8px;gap:0;">';
-  h+='<div style="display:flex;align-items:flex-end;"><div style="flex:0 0 22%;"></div><div style="flex:1;display:flex;flex-direction:column;align-items:center;"><div style="width:72%;"><div onclick="goTo(\'analisis\')" onmouseenter="this.style.opacity=\'0.88\'" onmouseleave="this.style.opacity=\'1\'" style="display:flex;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.16);cursor:pointer;width:100%;min-height:78px;"><div style="background:#0F385A;min-width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="color:white;font-weight:900;font-size:clamp(15px,1.6vw,20px);">1</span></div><div style="background:#1FB2DE;padding:8px 10px;flex:1;display:flex;align-items:center;gap:3px;"><span style="color:#0F385A;font-weight:800;font-size:clamp(8.5px,0.78vw,11px);text-transform:uppercase;letter-spacing:0.3px;line-height:1.4;">Análisis del<br>Contexto</span><span style="color:#0F385A;font-size:0.85em;margin-left:3px">↗</span></div></div></div><div style="width:3px;height:10px;background:#0F385A;"></div></div><div style="flex:0 0 22%;"></div></div>';
-  h+='<div style="flex:1;display:flex;align-items:stretch;min-height:0;">';
-  h+='<div style="flex:0 0 22%;display:flex;flex-direction:column;justify-content:space-evenly;border-right:3px solid #0F385A;padding:6px 8px 6px 0;gap:12px;">';
-  h+='<div style="display:grid;grid-template-columns:repeat(3,12px);gap:3px;opacity:0.4;margin-bottom:2px;"><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span></div>';
-  h+='<div style="display:flex;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.16);width:100%;min-height:78px;"><div style="background:#0F385A;min-width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="color:white;font-weight:900;font-size:clamp(15px,1.6vw,20px);">5</span></div><div style="background:#FBAF17;padding:8px 10px;flex:1;display:flex;align-items:center;gap:3px;"><span style="color:#0F385A;font-weight:800;font-size:clamp(8.5px,0.78vw,11px);text-transform:uppercase;letter-spacing:0.3px;line-height:1.4;">Cierre de metas,<br>planes y proyectos</span></div></div>';
-  h+='<div style="display:flex;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.16);width:100%;min-height:78px;"><div style="background:#0F385A;min-width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="color:white;font-weight:900;font-size:clamp(15px,1.6vw,20px);">4</span></div><div style="background:#A6CE38;padding:8px 10px;flex:1;display:flex;align-items:center;gap:3px;"><span style="color:#0F385A;font-weight:800;font-size:clamp(8.5px,0.78vw,11px);text-transform:uppercase;letter-spacing:0.3px;line-height:1.4;">Seguimiento y<br>reporte de avance</span></div></div></div>';
-  h+='<div style="flex:1;border-top:3px solid #0F385A;border-bottom:3px solid #0F385A;display:flex;align-items:center;justify-content:center;padding:8px 12px;background:white;"><img src="./public/img/brand/lineas-estrategicas.jpg" style="max-width:min(60vh,96%);max-height:min(48vh,92%);width:auto;height:auto;object-fit:contain;display:block;"></div>';
-  h+='<div style="flex:0 0 22%;display:flex;flex-direction:column;justify-content:space-evenly;border-left:3px solid #0F385A;padding:6px 0 6px 8px;gap:12px;">';
-  h+='<div style="display:flex;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.16);width:100%;min-height:78px;"><div style="background:#0F385A;min-width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="color:white;font-weight:900;font-size:clamp(15px,1.6vw,20px);">2</span></div><div style="background:#EC0677;padding:8px 10px;flex:1;display:flex;align-items:center;gap:3px;"><span style="color:white;font-weight:800;font-size:clamp(8.5px,0.78vw,11px);text-transform:uppercase;letter-spacing:0.3px;line-height:1.4;">Definición y<br>aprobación de<br>metas y recursos</span></div></div>';
-  h+='<div style="display:flex;align-items:stretch;border-radius:10px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.16);width:100%;min-height:78px;"><div style="background:#0F385A;min-width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="color:white;font-weight:900;font-size:clamp(15px,1.6vw,20px);">3</span></div><div style="background:#15BECE;padding:8px 10px;flex:1;display:flex;align-items:center;gap:3px;"><span style="color:#0F385A;font-weight:800;font-size:clamp(8.5px,0.78vw,11px);text-transform:uppercase;letter-spacing:0.3px;line-height:1.4;">Implementación<br>de planes y<br>proyectos</span></div></div>';
-  h+='<div style="display:grid;grid-template-columns:repeat(3,12px);gap:3px;opacity:0.4;margin-top:2px;"><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span><span style="color:#1FB2DE;font-weight:900;font-size:11px;">×</span></div></div></div></div></div></div>';
+  (function(){
+    h += '<div class="slide" id="slide-ciclo" data-title="Ciclo de la Estrategia"><div class="sf" style="background:white;display:flex;align-items:center;overflow:hidden;">';
+    h += '<div style="width:30%;padding:0 28px 0 44px;flex-shrink:0;">';
+    h += '<img src="./public/img/brand/logo-poli.jpg" style="height:50px;object-fit:contain;margin-bottom:32px;display:block;">';
+    h += '<div style="font-weight:900;font-size:clamp(20px,2.8vw,40px);color:var(--navy);text-transform:uppercase;letter-spacing:2px;line-height:1.15;">Ciclo<br>de la<br>Estrategia</div>';
+    h += '<div style="width:50px;height:4px;background:var(--cyan);border-radius:2px;margin:16px 0;"></div>';
+    h += '<div style="font-size:clamp(8px,0.76vw,11px);color:#666;line-height:1.7;">Haz clic en cada etapa del ciclo para explorar su contenido.</div>';
+    h += '</div>';
+    h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;height:100%;overflow:hidden;padding:12px 14px 12px 0;">';
+    var cx=300,cy=300,Ro=252,Ri=112;
+    var segs=[
+      {n:'01',lines:['Análisis del','Contexto'],fill:'#1FB2DE',tc:'#0F385A',s:-88,e:-20,tgt:'analisis'},
+      {n:'02',lines:['Definición y','aprobación de','metas y recursos'],fill:'#EC0677',tc:'white',s:-16,e:52,tgt:'avances'},
+      {n:'03',lines:['Implementación','de planes y','proyectos'],fill:'#15BECE',tc:'#0F385A',s:56,e:124,tgt:'planes'},
+      {n:'04',lines:['Seguimiento y','reporte de avance'],fill:'#A6CE38',tc:'#0F385A',s:128,e:196,tgt:'reporte'},
+      {n:'05',lines:['Cierre de metas,','planes y proyectos'],fill:'#FBAF17',tc:'#0F385A',s:200,e:268,tgt:'balance'}
+    ];
+    var svg='<svg viewBox="0 0 600 600" style="width:100%;height:100%;max-height:calc(100vh - 20px);" xmlns="http://www.w3.org/2000/svg">';
+    svg+='<defs><clipPath id="ciclo-cc"><circle cx="300" cy="300" r="108"/></clipPath><filter id="ciclo-sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="2" stdDeviation="5" flood-opacity="0.15"/></filter></defs>';
+    svg+='<g filter="url(#ciclo-sh)">';
+    segs.forEach(function(seg){
+      var a1=seg.s*Math.PI/180,a2=seg.e*Math.PI/180,mid=((seg.s+seg.e)/2)*Math.PI/180;
+      var x1=cx+Ro*Math.cos(a1),y1=cy+Ro*Math.sin(a1);
+      var x2=cx+Ro*Math.cos(a2),y2=cy+Ro*Math.sin(a2);
+      var x3=cx+Ri*Math.cos(a2),y3=cy+Ri*Math.sin(a2);
+      var x4=cx+Ri*Math.cos(a1),y4=cy+Ri*Math.sin(a1);
+      var laf=(seg.e-seg.s>180)?1:0;
+      var d='M '+x1+','+y1+' A '+Ro+','+Ro+' 0 '+laf+',1 '+x2+','+y2+' L '+x3+','+y3+' A '+Ri+','+Ri+' 0 '+laf+',0 '+x4+','+y4+' Z';
+      svg+='<g onclick="goTo(\''+seg.tgt+'\')" onmouseenter="this.firstElementChild.setAttribute(\'opacity\',\'0.82\')" onmouseleave="this.firstElementChild.removeAttribute(\'opacity\')" style="cursor:pointer">';
+      svg+='<path d="'+d+'" fill="'+seg.fill+'" stroke="white" stroke-width="3.5" stroke-linejoin="round"/>';
+      var na=(seg.e-20)*Math.PI/180,nr=134,nx=cx+nr*Math.cos(na),ny=cy+nr*Math.sin(na);
+      svg+='<text x="'+nx+'" y="'+ny+'" text-anchor="middle" dominant-baseline="middle" font-family="Montserrat,sans-serif" font-weight="900" font-size="26" fill="white" stroke="rgba(0,0,0,0.18)" stroke-width="2" paint-order="stroke">'+seg.n+'</text>';
+      var lr=192,lx=cx+lr*Math.cos(mid),ly=cy+lr*Math.sin(mid);
+      var lh=14,sy=ly-(seg.lines.length-1)*lh/2;
+      seg.lines.forEach(function(line,i){
+        svg+='<text x="'+lx+'" y="'+(sy+i*lh)+'" text-anchor="middle" dominant-baseline="middle" font-family="Montserrat,sans-serif" font-weight="800" font-size="12" fill="'+seg.tc+'">'+line+'</text>';
+      });
+      svg+='</g>';
+    });
+    svg+='</g>';
+    svg+='<image href="./public/img/brand/lineas-estrategicas.jpg" x="192" y="192" width="216" height="216" clip-path="url(#ciclo-cc)" preserveAspectRatio="xMidYMid slice"/>';
+    svg+='<circle cx="300" cy="300" r="108" fill="none" stroke="white" stroke-width="4"/>';
+    svg+='<circle cx="300" cy="300" r="253" fill="none" stroke="#e8edf2" stroke-width="1.5"/>';
+    svg+='</svg>';
+    h+=svg;
+    h+='</div>';
+    h+='</div></div>';
+  })();
 
   /* ===== ANALISIS ===== */
-  h+='<div class="slide" id="slide-analisis" data-title="Análisis del Contexto"><div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
-  h+='<div style="padding:12px 24px 8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;"><div style="text-align:center;"><div style="font-weight:900;color:#0F385A;font-size:clamp(14px,1.8vw,24px);text-transform:uppercase;letter-spacing:2px;">Análisis del Contexto</div></div><img src="./public/img/brand/logo-poli.jpg" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);height:42px;object-fit:contain;"></div>';
-  h+='<div style="width:55px;height:3px;background:#1FB2DE;border-radius:2px;margin:0 auto 6px;flex-shrink:0;"></div>';
+  h += '<div class="slide" id="slide-analisis" data-title="Análisis del Contexto"><div class="sf" style="background:linear-gradient(135deg,#071422 0%,#0F385A 55%,#0b2038 100%);display:flex;flex-direction:column;overflow:hidden;">';
+  h += '<div style="padding:14px 24px 10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><div style="text-align:center;"><div style="font-weight:900;color:white;font-size:clamp(14px,1.8vw,24px);text-transform:uppercase;letter-spacing:3px;">Análisis del Contexto</div></div></div>';
+  h += '<div style="width:55px;height:3px;background:rgba(31,178,222,0.8);border-radius:2px;margin:0 auto 0;flex-shrink:0;"></div>';
 
-  /* FODA + PESTEL modals */
-  var quadCfg={F:{color:'#A6CE38',label:'Fortalezas',titleColor:'#0F385A'},O:{color:'#1FB2DE',label:'Oportunidades',titleColor:'#0F385A'},D:{color:'#EC0677',label:'Debilidades',titleColor:'white'},A:{color:'#FBAF17',label:'Amenazas',titleColor:'#0F385A'}};
-  var quadKey={F:'fortalezas',O:'oportunidades',D:'debilidades',A:'amenazas'};
-  ['F','O','D','A'].forEach(function(q){
-    var items=foda.filter(function(r){return r.cuadrante===quadKey[q];});
-    var c=quadCfg[q];
-    h+='<div id="foda-modal-'+q+'" onclick="this.style.display=\'none\'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;"><div onclick="event.stopPropagation()" style="background:white;border-radius:16px;padding:24px 28px;max-width:420px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.3);border-top:6px solid '+c.color+';">';
-    h+='<div style="font-weight:900;color:'+c.color+';font-size:1.1em;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">'+c.label+'</div>';
-    items.forEach(function(r){
-      h+='<div style="display:flex;gap:8px;align-items:flex-start;margin:5px 0"><span style="color:'+c.color+';font-weight:900;flex-shrink:0">▸</span><span style="font-size:0.82em;color:#333;line-height:1.4">'+esc(r.item)+'</span></div>';
+  /* FODA + PESTEL modals — se montan en body para no quedar ocultos por display:none del slide padre */
+  var quadCfg = {F:{color:'#A6CE38',label:'Fortalezas',tc:'#0F385A'},O:{color:'#1FB2DE',label:'Oportunidades',tc:'#0F385A'},D:{color:'#EC0677',label:'Debilidades',tc:'white'},A:{color:'#FBAF17',label:'Amenazas',tc:'#0F385A'}};
+  var quadKey = {F:'fortalezas',O:'oportunidades',D:'debilidades',A:'amenazas'};
+  var mh = '';
+  ['F','O','D','A'].forEach(function (q) {
+    var items = foda.filter(function (r) { return r.cuadrante === quadKey[q]; });
+    var c = quadCfg[q];
+    mh += '<div id="foda-modal-'+q+'" onclick="this.style.display=\'none\'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">';
+    mh += '<div onclick="event.stopPropagation()" style="background:white;border-radius:20px;max-width:460px;width:92%;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.35);border-top:6px solid '+c.color+';overflow:hidden;">';
+    /* header fijo */
+    mh += '<div style="padding:22px 28px 14px;flex-shrink:0;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:12px;"><div style="width:36px;height:36px;background:'+c.color+';border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:1.2em;flex-shrink:0;">'+q+'</div><span style="font-weight:900;color:'+c.color+';font-size:1.05em;text-transform:uppercase;letter-spacing:1px;">'+c.label+'</span></div>';
+    /* contenido scrollable */
+    mh += '<div style="overflow-y:auto;flex:1;padding:16px 28px;">';
+    items.forEach(function (r) {
+      mh += '<div style="display:flex;gap:8px;align-items:flex-start;margin:7px 0;padding:9px 12px;background:#f9f9f9;border-radius:8px;border-left:3px solid '+c.color+'"><span style="font-size:0.82em;color:#333;line-height:1.5">'+esc(r.item)+'</span></div>';
     });
-    h+='<button onclick="document.getElementById(\'foda-modal-'+q+'\').style.display=\'none\'" style="margin-top:14px;background:'+c.color+';color:'+c.titleColor+';border:none;border-radius:8px;padding:8px 20px;cursor:pointer;font-weight:800;font-size:0.85em;float:right">Cerrar</button></div></div>';
+    mh += '</div>';
+    /* footer fijo con botón siempre visible */
+    mh += '<div style="padding:14px 28px 20px;flex-shrink:0;border-top:1px solid #f0f0f0;text-align:right;"><button onclick="document.getElementById(\'foda-modal-'+q+'\').style.display=\'none\'" style="background:'+c.color+';color:'+c.tc+';border:none;border-radius:10px;padding:10px 28px;cursor:pointer;font-weight:800;font-size:0.88em;font-family:inherit;">Cerrar ✕</button></div>';
+    mh += '</div></div>';
   });
 
-  /* PESTEL modals */
-  var pestelCfg={P:{color:'#EC0677',label:'P — Impacto Político'},E1:{color:'#FBAF17',label:'E — Impacto Económico'},S:{color:'#1FB2DE',label:'S — Impacto Social'},T:{color:'#15BECE',label:'T — Impacto Tecnológico'},E2:{color:'#A6CE38',label:'E — Impacto Ecológico'},L:{color:'#0F385A',label:'L — Impacto Legal'}};
-  var pestelByLetter={};
-  pestel.forEach(function(r){
-    var l=r.letra||'?';
-    var key=l;
-    if(l==='E'){
-      if(r.nombre && r.nombre.toLowerCase().includes('económico')) key='E1';
-      else if(r.nombre && r.nombre.toLowerCase().includes('ecológico')) key='E2';
-    }
-    if(!pestelByLetter[key])pestelByLetter[key]={nombre:r.nombre,color:r.color,items:[]};
+  var pestelCfg = {P:{color:'#EC0677',label:'Impacto Político',tc:'white'},E1:{color:'#FBAF17',label:'Impacto Económico',tc:'#0F385A'},S:{color:'#1FB2DE',label:'Impacto Social',tc:'#0F385A'},T:{color:'#15BECE',label:'Impacto Tecnológico',tc:'#0F385A'},E2:{color:'#A6CE38',label:'Impacto Ecológico',tc:'#0F385A'},L:{color:'#0F385A',label:'Impacto Legal',tc:'white'}};
+  var pestelByLetter = {};
+  pestel.forEach(function (r) {
+    var l = r.letra || '?', key = l;
+    if (l === 'E') key = (r.nombre && r.nombre.toLowerCase().includes('económico')) ? 'E1' : 'E2';
+    if (!pestelByLetter[key]) pestelByLetter[key] = {nombre:r.nombre,color:r.color,items:[]};
     pestelByLetter[key].items.push({cat:r.orden,item:r.item});
   });
-  Object.keys(pestelByLetter).forEach(function(l){
-    var g=pestelByLetter[l];
-    var c=pestelCfg[l]||{color:g.color,label:g.nombre};
-    var modalId='pestel-modal-'+l;
-    h+='<div id="'+modalId+'" onclick="this.style.display=\'none\'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;"><div onclick="event.stopPropagation()" style="background:white;border-radius:16px;padding:24px 28px;max-width:420px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.3);border-top:6px solid '+c.color+';">';
-    h+='<div style="font-weight:900;color:'+c.color+';font-size:1.1em;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">'+esc(c.label)+'</div>';
-    var currentCat='';
-    g.items.forEach(function(it){
-      if(it.cat!==currentCat){
-        if(currentCat!=='')h+='</div>';
-        currentCat=it.cat;
-        h+='<div style="margin-bottom:8px"><div style="font-weight:800;color:'+c.color+';font-size:0.71em;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">'+esc(it.cat)+'</div><ul style="padding-left:16px;margin:0">';
-      }
-      // Split items by semicolon
-      var parts=it.item.split(';');
-      parts.forEach(function(p){
-        h+='<li style="margin:2px 0;font-size:0.69em;color:#333;line-height:1.4">'+esc(p.trim())+'</li>';
-      });
+  ['P','E1','S','T','E2','L'].forEach(function (l) {
+    var g = pestelByLetter[l]; if (!g) return;
+    var c = pestelCfg[l] || {color:g.color,label:g.nombre,tc:'#0F385A'};
+    var mid = 'pestel-modal-'+l;
+    var letter = (l==='E1'||l==='E2')?'E':l;
+    mh += '<div id="'+mid+'" onclick="this.style.display=\'none\'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center;">';
+    mh += '<div onclick="event.stopPropagation()" style="background:white;border-radius:20px;max-width:500px;width:92%;max-height:82vh;display:flex;flex-direction:column;box-shadow:0 12px 48px rgba(0,0,0,0.35);border-top:6px solid '+c.color+';overflow:hidden;">';
+    /* header fijo */
+    mh += '<div style="padding:22px 28px 14px;flex-shrink:0;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:12px;"><div style="width:36px;height:36px;background:'+c.color+';border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:'+c.tc+';font-size:1.2em;flex-shrink:0;">'+letter+'</div><span style="font-weight:900;color:'+c.color+';font-size:1.05em;text-transform:uppercase;letter-spacing:1px;">'+esc(c.label)+'</span></div>';
+    /* contenido scrollable */
+    mh += '<div style="overflow-y:auto;flex:1;padding:16px 28px;">';
+    var cc = '';
+    g.items.forEach(function (it) {
+      if (it.cat !== cc) { if (cc !== '') mh += '</ul></div>'; cc = it.cat; mh += '<div style="margin-bottom:10px"><div style="font-weight:800;color:'+c.color+';font-size:0.72em;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;padding:4px 8px;background:'+c.color+'18;border-radius:6px;">'+esc(it.cat)+'</div><ul style="padding-left:18px;margin:0">'; }
+      it.item.split(';').forEach(function (p) { mh += '<li style="margin:3px 0;font-size:0.72em;color:#333;line-height:1.5">'+esc(p.trim())+'</li>'; });
     });
-    if(currentCat!=='')h+='</ul></div>';
-    h+='<button onclick="document.getElementById(\''+modalId+'\').style.display=\'none\'" style="margin-top:14px;background:'+c.color+';color:'+(l==='P'||l==='L'?'white':'#0F385A')+';border:none;border-radius:8px;padding:8px 20px;cursor:pointer;font-weight:800;font-size:0.85em;float:right">Cerrar</button></div></div>';
+    if (cc !== '') mh += '</ul></div>';
+    mh += '</div>';
+    /* footer fijo con botón siempre visible */
+    mh += '<div style="padding:14px 28px 20px;flex-shrink:0;border-top:1px solid #f0f0f0;text-align:right;"><button onclick="document.getElementById(\''+mid+'\').style.display=\'none\'" style="background:'+c.color+';color:'+c.tc+';border:none;border-radius:10px;padding:10px 28px;cursor:pointer;font-weight:800;font-size:0.88em;font-family:inherit;">Cerrar ✕</button></div>';
+    mh += '</div></div>';
   });
 
-  /* FODA + PESTEL tiles side by side */
-  h+='<div style="flex:1;display:flex;gap:20px;padding:8px 24px 14px;align-items:stretch;overflow:hidden;">';
-  h+='<div style="flex:1;display:flex;flex-direction:column;gap:8px;"><div style="text-align:center;font-weight:900;color:#0F385A;font-size:clamp(12px,1.2vw,16px);text-transform:uppercase;letter-spacing:1px;">FODA Institucional</div><div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;">';
-  ['F','O','D','A'].forEach(function(q){
-    var c=quadCfg[q];
-    var titleColor=c.label==='Debilidades'?'white':c.titleColor;
-    h+='<div onclick="document.getElementById(\'foda-modal-'+q+'\').style.display=\'flex\'" style="background:'+c.color+';border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:6px;padding:12px;transition:opacity 0.15s;box-shadow:0 3px 12px rgba(0,0,0,0.15);" onmouseenter="this.style.opacity=\'0.82\'" onmouseleave="this.style.opacity=\'1\'"><span style="color:'+titleColor+';font-size:clamp(22px,2.8vw,38px);font-weight:900;line-height:1">'+q+'</span><span style="color:'+titleColor+';font-size:clamp(8px,0.72vw,10px);font-weight:800;text-transform:uppercase;letter-spacing:0.5px;text-align:center">'+c.label+'</span></div>';
-  });
-  h+='</div><div style="text-align:center;font-size:0.68em;color:#888;margin-top:4px;">↑ Haz clic en cada cuadrante para ver el detalle</div></div>';
-  h+='<div style="width:2px;background:#eef2f7;border-radius:2px;flex-shrink:0;"></div>';
-  h+='<div style="flex:1;display:flex;flex-direction:column;gap:8px;"><div style="text-align:center;font-weight:900;color:#0F385A;font-size:clamp(12px,1.2vw,16px);text-transform:uppercase;letter-spacing:1px;">PESTEL Institucional</div><div style="flex:1;display:flex;gap:8px;align-items:stretch;">';
-  var pCfg=[{k:'E1',c:'#FBAF17',l:'Económico',tc:'#0F385A'},{k:'P',c:'#EC0677',l:'Político',tc:'white'},{k:'S',c:'#1FB2DE',l:'Social',tc:'#0F385A'},{k:'T',c:'#15BECE',l:'Tecnológico',tc:'#0F385A'},{k:'E2',c:'#A6CE38',l:'Ecológico',tc:'#0F385A'},{k:'L',c:'#0F385A',l:'Legal',tc:'white'}];
-  pCfg.forEach(function(p){
-    h+='<div onclick="document.getElementById(\'pestel-modal-'+p.k+'\').style.display=\'flex\'" style="background:'+p.c+';border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:4px;padding:10px 6px;flex:1;transition:opacity 0.15s;box-shadow:0 3px 12px rgba(0,0,0,0.15);" onmouseenter="this.style.opacity=\'0.82\'" onmouseleave="this.style.opacity=\'1\'"><span style="color:'+p.tc+';font-size:clamp(20px,2.5vw,34px);font-weight:900;line-height:1">'+(p.k==='E1'||p.k==='E2'?'E':p.k)+'</span><span style="color:'+p.tc+';font-size:clamp(7px,0.65vw,9px);font-weight:800;text-transform:uppercase;letter-spacing:0.3px;text-align:center">'+p.l+'</span></div>';
-  });
-  h+='</div><div style="text-align:center;font-size:0.68em;color:#888;margin-top:4px;">↑ Haz clic en cada letra para ver el impacto</div></div></div></div></div>';
+  /* ===== ANALISIS LANDING ===== */
+  h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:16px 40px;gap:32px;position:relative;overflow:hidden;">';
+  h += '<div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(31,178,222,0.12) 0%,transparent 70%);top:-160px;left:-160px;pointer-events:none;"></div>';
+  h += '<div style="position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(236,6,119,0.08) 0%,transparent 70%);bottom:-100px;right:-80px;pointer-events:none;"></div>';
+  h += '<div style="position:absolute;top:clamp(6px,1vh,14px);color:rgba(255,255,255,0.4);font-size:clamp(8px,0.75vw,10px);text-transform:uppercase;letter-spacing:3px;">Selecciona el análisis que deseas explorar</div>';
 
-  /* ===== FODA full view ===== */
-  h+='<div class="slide" id="slide-foda" data-title="FODA Institucional"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-  h+='<div style="background:#0F385A;padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">📊</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">FODA Institucional 2025</span></div>';
-  h+='<div style="flex:1;overflow-y:auto;padding:14px 22px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">';
-  var fodaCfg={debilidades:{color:'#EC0677',letter:'D',icon:'⚠️'},oportunidades:{color:'#1FB2DE',letter:'O',icon:'🚀'},fortalezas:{color:'#A6CE38',letter:'F',icon:'💪'},amenazas:{color:'#0F385A',letter:'A',icon:'⚡'}};
-  ['debilidades','oportunidades','fortalezas','amenazas'].forEach(function(cuad){
-    var items=foda.filter(function(r){return r.cuadrante===cuad;});
-    var c=fodaCfg[cuad];
-    h+='<div style="background:white;border-radius:12px;overflow:hidden;border:2px solid '+c.color+'30;box-shadow:0 2px 10px rgba(0,0,0,0.08)">';
-    h+='<div style="background:'+c.color+';padding:10px 14px;display:flex;align-items:center;gap:10px"><div style="background:rgba(255,255,255,0.2);width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1em;font-weight:900;color:white;flex-shrink:0">'+c.letter+'</div><span style="font-weight:900;color:white;font-size:0.82em;text-transform:uppercase;letter-spacing:0.8px">'+cuad.toUpperCase()+'</span></div>';
-    h+='<div style="padding:10px 14px">';
-    items.forEach(function(r){
-      h+='<div style="display:flex;gap:6px;align-items:flex-start;margin:4px 0;font-size:0.71em;color:#333;line-height:1.35"><span style="color:'+c.color+';font-weight:900;flex-shrink:0;margin-top:1px">▸</span><span>'+esc(r.item)+'</span></div>';
-    });
-    h+='</div></div>';
-  });
-  h+='</div></div></div></div>';
+  /* Tarjeta FODA */
+  h += '<div onclick="goTo(\'foda\')" style="flex:1;max-width:380px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.14);border-radius:28px;padding:clamp(18px,2.8vh,34px) 28px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,1.4vh,16px);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 10px 40px rgba(0,0,0,0.3);" onmouseenter="this.style.transform=\'translateY(-10px) scale(1.03)\';this.style.boxShadow=\'0 24px 64px rgba(166,206,56,0.28)\';this.style.borderColor=\'rgba(166,206,56,0.55)\'" onmouseleave="this.style.transform=\'\';this.style.boxShadow=\'0 10px 40px rgba(0,0,0,0.3)\';this.style.borderColor=\'rgba(255,255,255,0.14)\'">';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:clamp(80px,9vw,108px);height:clamp(80px,9vw,108px);">';
+  h += '<div style="background:#A6CE38;border-radius:10px 3px 3px 3px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:clamp(18px,2.2vw,30px);">F</div>';
+  h += '<div style="background:#1FB2DE;border-radius:3px 10px 3px 3px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:clamp(18px,2.2vw,30px);">O</div>';
+  h += '<div style="background:#EC0677;border-radius:3px 3px 3px 10px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:clamp(18px,2.2vw,30px);">D</div>';
+  h += '<div style="background:#FBAF17;border-radius:3px 3px 10px 3px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:clamp(18px,2.2vw,30px);">A</div>';
+  h += '</div>';
+  h += '<div style="text-align:center;"><div style="font-weight:900;color:white;font-size:clamp(18px,2.2vw,30px);text-transform:uppercase;letter-spacing:3px;line-height:1;">FODA</div><div style="color:rgba(255,255,255,0.5);font-size:clamp(9px,0.85vw,11px);text-transform:uppercase;letter-spacing:2px;margin-top:5px;">Institucional</div></div>';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;width:100%;">';
+  [{c:'#A6CE38',l:'Fortalezas'},{c:'#1FB2DE',l:'Oportunidades'},{c:'#EC0677',l:'Debilidades'},{c:'#FBAF17',l:'Amenazas'}].forEach(function(it){ h += '<div style="display:flex;align-items:center;gap:7px;"><div style="width:9px;height:9px;border-radius:3px;background:'+it.c+';flex-shrink:0;"></div><span style="font-size:clamp(8px,0.78vw,11px);color:rgba(255,255,255,0.7);font-weight:600;">'+it.l+'</span></div>'; });
+  h += '</div>';
+  h += '<div style="background:linear-gradient(135deg,#A6CE38,#1FB2DE);border-radius:50px;padding:9px 28px;font-weight:800;color:white;font-size:clamp(9px,0.85vw,12px);text-transform:uppercase;letter-spacing:1.5px;box-shadow:0 4px 16px rgba(166,206,56,0.4);margin-top:4px;">Explorar →</div>';
+  h += '</div>';
 
-  /* ===== PESTEL full view ===== */
-  h+='<div class="slide" id="slide-pestel" data-title="PESTEL Institucional"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-  h+='<div style="background:#0F385A;padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🌐</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Análisis PESTEL Institucional 2025</span></div>';
-  h+='<div style="flex:1;overflow-y:auto;padding:14px 22px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
-  var pestelQuad={E1:{color:'#FBAF17',icon:'💰',label:'IMPACTO ECONÓMICO',tc:'#0F385A'},P:{color:'#EC0677',icon:'🏛️',label:'IMPACTO POLÍTICO',tc:'white'},S:{color:'#1FB2DE',icon:'👥',label:'IMPACTO SOCIAL',tc:'#0F385A'},T:{color:'#15BECE',icon:'💻',label:'IMPACTO TECNOLÓGICO',tc:'#0F385A'},E2:{color:'#A6CE38',icon:'🌱',label:'IMPACTO ECOLÓGICO',tc:'#0F385A'},L:{color:'#0F385A',icon:'⚖️',label:'IMPACTO LEGAL',tc:'white'}};
-  Object.keys(pestelByLetter).forEach(function(l){
-    var g=pestelByLetter[l];
-    var q=pestelQuad[l]||{color:g.color||'#888',icon:'📌',label:g.nombre||'OTROS',tc:'#0F385A'};
-    h+='<div style="background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.1);border-left:4px solid '+q.color+'">';
-    h+='<button onclick="togglePestel(this)" style="width:100%;background:'+q.color+';color:'+q.tc+';border:none;padding:11px 16px;cursor:pointer;font-family:inherit;font-weight:800;font-size:0.82em;display:flex;align-items:center;gap:10px;text-align:left"><span style="font-size:1.2em">'+q.icon+'</span><span style="flex:1"><strong style="font-size:1.2em">'+(l==='E1'||l==='E2'?'E':l)+'</strong> — '+esc(q.label)+'</span><span>▼</span></button>';
-    h+='<div class="pestel-body" style="display:none;padding:12px 16px">';
-    h+='<div style="margin-bottom:6px;font-size:0.69em;color:#333;line-height:1.4">';
-    g.items.forEach(function(it){
-      h+=esc(it.cat)+': '+esc(it.item)+'<br>';
-    });
-    h+='</div></div></div>';
+  /* Tarjeta PESTEL */
+  h += '<div onclick="goTo(\'pestel\')" style="flex:1;max-width:380px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.14);border-radius:28px;padding:clamp(18px,2.8vh,34px) 28px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:clamp(10px,1.4vh,16px);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 10px 40px rgba(0,0,0,0.3);" onmouseenter="this.style.transform=\'translateY(-10px) scale(1.03)\';this.style.boxShadow=\'0 24px 64px rgba(251,175,23,0.28)\';this.style.borderColor=\'rgba(251,175,23,0.55)\'" onmouseleave="this.style.transform=\'\';this.style.boxShadow=\'0 10px 40px rgba(0,0,0,0.3)\';this.style.borderColor=\'rgba(255,255,255,0.14)\'">';
+  h += '<div style="display:flex;gap:4px;align-items:flex-end;">';
+  [{l:'P',c:'#EC0677',h:52},{l:'E',c:'#FBAF17',h:44},{l:'S',c:'#1FB2DE',h:48},{l:'T',c:'#15BECE',h:42},{l:'E',c:'#A6CE38',h:46},{l:'L',c:'rgba(255,255,255,0.18)',h:52,b:'1px solid rgba(255,255,255,0.35)'}].forEach(function(it){ h += '<div style="background:'+it.c+';border-radius:8px;width:clamp(26px,3.2vw,38px);height:'+it.h+'px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:clamp(13px,1.5vw,20px);'+(it.b?'border:'+it.b+';':'')+'">'+it.l+'</div>'; });
+  h += '</div>';
+  h += '<div style="text-align:center;"><div style="font-weight:900;color:white;font-size:clamp(18px,2.2vw,30px);text-transform:uppercase;letter-spacing:3px;line-height:1;">PESTEL</div><div style="color:rgba(255,255,255,0.5);font-size:clamp(9px,0.85vw,11px);text-transform:uppercase;letter-spacing:2px;margin-top:5px;">Institucional</div></div>';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;width:100%;">';
+  [{c:'#EC0677',l:'Político'},{c:'#FBAF17',l:'Económico'},{c:'#1FB2DE',l:'Social'},{c:'#15BECE',l:'Tecnológico'},{c:'#A6CE38',l:'Ecológico'},{c:'rgba(255,255,255,0.45)',l:'Legal'}].forEach(function(it){ h += '<div style="display:flex;align-items:center;gap:7px;"><div style="width:9px;height:9px;border-radius:3px;background:'+it.c+';flex-shrink:0;"></div><span style="font-size:clamp(8px,0.78vw,11px);color:rgba(255,255,255,0.7);font-weight:600;">'+it.l+'</span></div>'; });
+  h += '</div>';
+  h += '<div style="background:linear-gradient(135deg,#EC0677,#FBAF17);border-radius:50px;padding:9px 28px;font-weight:800;color:white;font-size:clamp(9px,0.85vw,12px);text-transform:uppercase;letter-spacing:1.5px;box-shadow:0 4px 16px rgba(236,6,119,0.4);margin-top:4px;">Explorar →</div>';
+  h += '</div>';
+
+  h += '</div></div></div>';
+
+  /* ===== FODA full ===== */
+  h += '<div class="slide" id="slide-foda" data-title="FODA Institucional"><div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
+  h += '<div style="background:var(--navy);padding:10px 24px;flex-shrink:0;display:flex;align-items:center;gap:14px;">';
+  h += '<button onclick="goTo(\'analisis\')" style="background:rgba(255,255,255,0.15);border:none;color:white;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:0.78em;font-weight:700;font-family:inherit;white-space:nowrap;">← Volver</button>';
+  h += '<span style="color:white;font-weight:900;font-size:clamp(13px,1.6vw,20px);text-transform:uppercase;letter-spacing:1px;flex:1;text-align:center;">FODA Institucional 2025</span>';
+  h += '</div>';
+  h += '<div style="flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;overflow:hidden;">';
+  ['F','O','D','A'].forEach(function (q) {
+    var c = quadCfg[q];
+    h += '<div onclick="document.getElementById(\'foda-modal-'+q+'\').style.display=\'flex\'" style="background:'+c.color+';display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:clamp(8px,1.2vh,14px);padding:20px;transition:filter 0.2s;" onmouseenter="this.style.filter=\'brightness(0.9)\'" onmouseleave="this.style.filter=\'\'">';
+    h += '<span style="color:'+c.tc+';font-size:clamp(52px,8vw,100px);font-weight:900;line-height:1;text-shadow:0 4px 24px rgba(0,0,0,0.12);">'+q+'</span>';
+    h += '<span style="color:'+c.tc+';font-size:clamp(11px,1.1vw,16px);font-weight:800;text-transform:uppercase;letter-spacing:2px;">'+c.label+'</span>';
+    h += '<span style="color:'+c.tc+';font-size:clamp(8px,0.7vw,10px);opacity:0.65;margin-top:2px;">Clic para ver el detalle</span>';
+    h += '</div>';
   });
-  h+='</div></div></div></div>';
+  h += '</div></div></div>';
+
+  /* ===== PESTEL full ===== */
+  h += '<div class="slide" id="slide-pestel" data-title="PESTEL Institucional"><div class="sf" style="background:#0c0e1a;display:flex;flex-direction:column;overflow:hidden;">';
+  h += '<div style="background:rgba(0,0,0,0.45);border-bottom:1px solid rgba(255,255,255,0.1);padding:10px 24px;flex-shrink:0;display:flex;align-items:center;gap:14px;">';
+  h += '<button onclick="goTo(\'analisis\')" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:white;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:0.78em;font-weight:700;font-family:inherit;white-space:nowrap;">← Volver</button>';
+  h += '<span style="color:white;font-weight:900;font-size:clamp(13px,1.6vw,20px);text-transform:uppercase;letter-spacing:2px;flex:1;text-align:center;">PESTEL Institucional 2025</span>';
+  h += '</div>';
+  h += '<div style="flex:1;display:flex;overflow:hidden;">';
+  /* Cada columna: gradiente temático + patrón SVG abstracto + ícono SVG representativo */
+  var pestelCols = [
+    {k:'P', letter:'P', g:'linear-gradient(170deg,#c0004a 0%,#6b0028 100%)', label:'Político',
+     pattern:'<polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/><polygon points="50,18 82,34 82,66 50,82 18,66 18,34" fill="rgba(255,255,255,0.04)" stroke="none"/>',
+     svg:'<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="12" y="36" width="40" height="22" rx="2" fill="rgba(255,255,255,0.9)"/><rect x="4" y="34" width="56" height="5" rx="2" fill="rgba(255,255,255,0.9)"/><rect x="28" y="14" width="8" height="22" fill="rgba(255,255,255,0.9)"/><polygon points="32,4 48,14 16,14" fill="rgba(255,255,255,0.9)"/><rect x="20" y="42" width="8" height="16" fill="rgba(200,0,80,0.6)"/><rect x="36" y="42" width="8" height="16" fill="rgba(200,0,80,0.6)"/></svg>'},
+    {k:'E1',letter:'E', g:'linear-gradient(170deg,#e8a000 0%,#7a5000 100%)', label:'Económico',
+     pattern:'<line x1="10" y1="80" x2="25" y2="55" stroke="rgba(255,255,255,0.07)" stroke-width="2"/><line x1="25" y1="55" x2="45" y2="65" stroke="rgba(255,255,255,0.07)" stroke-width="2"/><line x1="45" y1="65" x2="65" y2="30" stroke="rgba(255,255,255,0.07)" stroke-width="2"/><line x1="65" y1="30" x2="85" y2="15" stroke="rgba(255,255,255,0.07)" stroke-width="2"/><circle cx="25" cy="55" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="45" cy="65" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="65" cy="30" r="3" fill="rgba(255,255,255,0.1)"/>',
+     svg:'<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="38" width="10" height="20" rx="2" fill="rgba(255,255,255,0.9)"/><rect x="20" y="28" width="10" height="30" rx="2" fill="rgba(255,255,255,0.9)"/><rect x="34" y="18" width="10" height="40" rx="2" fill="rgba(255,255,255,0.9)"/><rect x="48" y="8" width="10" height="50" rx="2" fill="rgba(255,255,255,0.9)"/><polyline points="8,40 22,28 36,18 50,8" stroke="rgba(232,160,0,0.7)" stroke-width="2" fill="none"/></svg>'},
+    {k:'S', letter:'S', g:'linear-gradient(170deg,#0098c8 0%,#004e6a 100%)', label:'Social',
+     pattern:'<circle cx="50" cy="30" r="18" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2"/><circle cx="50" cy="30" r="10" fill="rgba(255,255,255,0.04)"/><circle cx="20" cy="60" r="14" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/>',
+     svg:'<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="18" r="8" fill="rgba(255,255,255,0.9)"/><circle cx="44" cy="18" r="8" fill="rgba(255,255,255,0.9)"/><circle cx="32" cy="14" r="8" fill="rgba(255,255,255,0.9)"/><path d="M4 48 C4 36 16 30 20 30 C24 30 28 32 32 32 C36 32 40 30 44 30 C48 30 60 36 60 48 L60 56 L4 56 Z" fill="rgba(255,255,255,0.9)"/></svg>'},
+    {k:'T', letter:'T', g:'linear-gradient(170deg,#009aaa 0%,#00555e 100%)', label:'Tecnológico',
+     pattern:'<rect x="15" y="15" width="70" height="70" rx="4" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-dasharray="6 4"/><rect x="30" y="30" width="40" height="40" rx="4" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>',
+     svg:'<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="14" stroke="rgba(255,255,255,0.9)" stroke-width="3"/><circle cx="32" cy="32" r="5" fill="rgba(255,255,255,0.9)"/><line x1="32" y1="4" x2="32" y2="14" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/><line x1="32" y1="50" x2="32" y2="60" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/><line x1="4" y1="32" x2="14" y2="32" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/><line x1="50" y1="32" x2="60" y2="32" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/><line x1="12" y1="12" x2="20" y2="20" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/><line x1="44" y1="44" x2="52" y2="52" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/><line x1="52" y1="12" x2="44" y2="20" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/><line x1="20" y1="44" x2="12" y2="52" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/></svg>'},
+    {k:'E2',letter:'E', g:'linear-gradient(170deg,#5a9e00 0%,#274800 100%)', label:'Ecológico',
+     pattern:'<path d="M50,85 Q30,60 50,40 Q70,20 50,5" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="3"/><path d="M50,65 Q65,55 75,40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/><path d="M50,65 Q35,55 25,40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2"/>',
+     svg:'<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M32 56 C32 56 10 40 10 22 C10 12 20 6 32 6 C44 6 54 12 54 22 C54 40 32 56 32 56Z" fill="rgba(255,255,255,0.9)"/><line x1="32" y1="32" x2="32" y2="58" stroke="rgba(90,158,0,0.5)" stroke-width="2"/><path d="M32 38 Q22 30 18 22" stroke="rgba(90,158,0,0.5)" stroke-width="1.5" fill="none"/><path d="M32 44 Q42 36 46 28" stroke="rgba(90,158,0,0.5)" stroke-width="1.5" fill="none"/></svg>'},
+    {k:'L', letter:'L', g:'linear-gradient(170deg,#1a5296 0%,#091e3a 100%)', label:'Legal',
+     pattern:'<rect x="10" y="10" width="80" height="80" rx="2" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/><line x1="10" y1="30" x2="90" y2="30" stroke="rgba(255,255,255,0.04)"/><line x1="10" y1="50" x2="90" y2="50" stroke="rgba(255,255,255,0.04)"/><line x1="10" y1="70" x2="90" y2="70" stroke="rgba(255,255,255,0.04)"/>',
+     svg:'<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="32" y1="6" x2="32" y2="52" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/><line x1="14" y1="16" x2="50" y2="16" stroke="rgba(255,255,255,0.9)" stroke-width="2.5" stroke-linecap="round"/><path d="M14 16 L6 36 C6 42 14 46 14 46 C14 46 22 42 22 36 Z" fill="rgba(255,255,255,0.85)"/><path d="M50 16 L42 36 C42 42 50 46 50 46 C50 46 58 42 58 36 Z" fill="rgba(255,255,255,0.85)"/><line x1="20" y1="54" x2="44" y2="54" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round"/></svg>'}
+  ];
+  pestelCols.forEach(function(p) {
+    h += '<div onclick="document.getElementById(\'pestel-modal-'+p.k+'\').style.display=\'flex\'" style="flex:1;position:relative;overflow:hidden;cursor:pointer;background:'+p.g+';" onmouseenter="this.style.filter=\'brightness(1.12)\'" onmouseleave="this.style.filter=\'\'">';
+    /* patrón SVG de fondo */
+    h += '<svg style="position:absolute;inset:0;width:100%;height:100%;opacity:0.8;" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'+p.pattern+'</svg>';
+    /* letra enorme decorativa */
+    h += '<div style="position:absolute;bottom:-0.15em;left:50%;transform:translateX(-50%);font-size:clamp(110px,16vw,210px);font-weight:900;color:rgba(0,0,0,0.12);line-height:1;user-select:none;white-space:nowrap;">'+p.letter+'</div>';
+    /* contenido */
+    h += '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(6px,1vh,11px);padding:12px 4px;">';
+    h += '<div style="width:clamp(32px,4vw,52px);height:clamp(32px,4vw,52px);">'+p.svg+'</div>';
+    h += '<span style="font-size:clamp(48px,6.8vw,86px);font-weight:900;color:white;line-height:1;text-shadow:0 4px 24px rgba(0,0,0,0.45);">'+p.letter+'</span>';
+    h += '<div style="width:22px;height:2px;background:rgba(255,255,255,0.65);border-radius:2px;"></div>';
+    h += '<span style="color:white;font-size:clamp(7px,0.75vw,11px);font-weight:800;text-transform:uppercase;letter-spacing:1.2px;text-align:center;">'+p.label+'</span>';
+    h += '<span style="color:rgba(255,255,255,0.55);font-size:clamp(6px,0.55vw,8px);text-transform:uppercase;letter-spacing:0.8px;margin-top:1px;">Ver impacto</span>';
+    h += '</div></div>';
+  });
+  h += '</div></div></div>';
 
   /* ===== AVANCES OVERVIEW ===== */
-  h+='<div class="slide" id="slide-avances" data-title="Avance Líneas Estratégicas 2025"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
-  h+='<div style="background:#0F385A;padding:13px 22px;flex-shrink:0;display:flex;align-items:center;gap:12px"><img src="./public/img/brand/logo-poli.jpg" style="height:28px"><span style="color:white;font-weight:900;font-size:clamp(11px,1.6vw,21px);text-transform:uppercase;letter-spacing:1px">Avance Líneas Estratégicas 2025</span><div style="margin-left:auto;color:#1FB2DE;font-size:0.7em;font-weight:700">↙ Clic sobre cada línea del diagrama</div></div>';
-  h+='<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px;position:relative;background:#f8fafe;"><img src="./public/img/brand/lineas-estrategicas.jpg" style="max-width:min(70vh,90%);max-height:85vh;object-fit:contain">';
-  h+='<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;width:100%;height:100%;z-index:2">';
-  var avPos=[{id:'sos-avance',x:'44%',y:'9%',rx:'24%',ry:'11%',label:'SOSTENIBILIDAD'},{id:'cal-avance',x:'23%',y:'30%',rx:'14%',ry:'17%',label:'CALIDAD'},{id:'exp-avance',x:'62%',y:'30%',rx:'14%',ry:'18%',label:'EXPANSIÓN'},{id:'edu-avance',x:'58%',y:'60%',rx:'15%',ry:'14%',label:'EDUCACIÓN PARA TODA LA VIDA'},{id:'exp2-avance',x:'26%',y:'58%',rx:'12%',ry:'13%',label:'EXPERIENCIA'},{id:'to-avance',x:'44%',y:'80%',rx:'24%',ry:'11%',label:'TRANSFORMACIÓN ORGANIZACIONAL'}];
-  avPos.forEach(function(p){
-    h+='<ellipse cx="'+p.x+'" cy="'+p.y+'" rx="'+p.rx+'" ry="'+p.ry+'" fill="transparent" style="cursor:pointer" onclick="goTo(\''+p.id+'\')" onmouseenter="this.setAttribute(\'fill\',\'rgba(255,255,255,0.2)\');document.getElementById(\'lbl-'+p.id+'\').style.display=\'block\'" onmouseleave="this.setAttribute(\'fill\',\'transparent\');document.getElementById(\'lbl-'+p.id+'\').style.display=\'none\'"/>';
-    h+='<text id="lbl-'+p.id+'" x="'+p.x+'" y="'+p.y+'" text-anchor="middle" dominant-baseline="middle" fill="#0F385A" font-size="11" font-family="Montserrat,sans-serif" font-weight="900" style="display:none;pointer-events:none;text-shadow:0 1px 3px rgba(255,255,255,0.95)">'+p.label+'</text>';
+  /* Cada pétalo: posición en % dentro del diagrama (721×735), tamaño del botón overlay */
+  /* Piezas ensambladas — SOS/TRANS: 945×472 (ancho completo, mitad alto);
+     EXP/EDU/EXP2: 472×472 (cuadrante 50%×50%); CAL: 388×298 (41%×31.5%) */
+  var avPiezas = [
+    {id:'sos-avance',  img:'./PDI/SOSTENIBILIDAD.png', color:paleta.green||'#A6CE38',
+     css:'position:absolute;top:0;left:0;width:100%;height:50%;z-index:1;'},
+    {id:'to-avance',   img:'./PDI/Tranformacion.png',  color:paleta.teal||'#15BECE',
+     css:'position:absolute;bottom:0;left:0;width:100%;height:50%;z-index:1;'},
+    {id:'exp-avance',  img:'./PDI/Expansion.png',      color:paleta.yellow||'#FBAF17',
+     css:'position:absolute;top:0;right:0;width:50%;height:50%;z-index:2;'},
+    {id:'edu-avance',  img:'./PDI/Eduvida.png',        color:paleta.navy||'#0F385A',
+     css:'position:absolute;bottom:0;right:0;width:50%;height:50%;z-index:2;'},
+    {id:'exp2-avance', img:'./PDI/Experiencia.png',    color:paleta.cyan||'#1FB2DE',
+     css:'position:absolute;bottom:0;left:0;width:50%;height:50%;z-index:2;'},
+    {id:'cal-avance',  img:'./PDI/Calidad.png',        color:paleta.pink||'#EC0677',
+     css:'position:absolute;top:14%;left:2%;width:41%;height:31.5%;z-index:3;'}
+  ];
+  h += '<div class="slide" id="slide-avances" data-title="Avance Líneas Estratégicas 2025"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
+  h += '<div class="sh-dark" style="background:var(--navy);"><img src="./public/img/brand/logo-poli.jpg" style="height:28px"><span class="tt">Avance Líneas Estratégicas 2025</span><div style="margin-left:auto;color:var(--cyan);font-size:0.7em;font-weight:700">✦ Clic sobre cada línea del diagrama</div></div>';
+  h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:8px;background:#f8fafe;overflow:hidden;">';
+  /* Contenedor cuadrado (945:944) — las piezas se ensamblan dentro */
+  h += '<div style="position:relative;height:calc(100% - 8px);aspect-ratio:945/944;">';
+  avPiezas.forEach(function(p) {
+    h += '<div onclick="goTo(\''+p.id+'\')" style="'+p.css+'cursor:pointer;transition:filter 0.18s;"'
+      + ' onmouseenter="this.style.filter=\'brightness(1.2) saturate(1.3) drop-shadow(0 0 18px '+p.color+'CC)\'"'
+      + ' onmouseleave="this.style.filter=\'\'">';
+    h += '<img src="'+p.img+'" style="width:100%;height:100%;display:block;pointer-events:none;">';
+    h += '</div>';
   });
-  h+='<circle cx="44%" cy="48%" r="9%" fill="none" stroke="rgba(15,56,90,0.2)" stroke-width="1.5" stroke-dasharray="8 6"><animateTransform attributeName="transform" type="rotate" from="0 44% 48%" to="360 44% 48%" dur="12s" repeatCount="indefinite"/></circle><circle cx="44%" cy="48%" r="6.5%" fill="none" stroke="rgba(31,178,222,0.25)" stroke-width="1.5" stroke-dasharray="5 8"><animateTransform attributeName="transform" type="rotate" from="360 44% 48%" to="0 44% 48%" dur="8s" repeatCount="indefinite"/></circle></svg></div></div></div>';
+  /* Comunidad Universitaria — centro decorativo */
+  h += '<img src="./PDI/Comunidad.png" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32%;height:auto;pointer-events:none;z-index:5;">';
+  h += '</div>';
+  h += '</div></div></div>';
 
-  /* ===== AVANCE DETAIL SLIDES (6 lines) ===== */
-  var lineIds=['calidad','educacion','expansion','experiencia','transformacion','sostenibilidad'];
-  var slideSuffixes=['cal-avance','edu-avance','exp-avance','exp2-avance','to-avance','sos-avance'];
-  var lineColors=[paleta.pink||'#EC0677',paleta.navy||'#0F385A',paleta.yellow||'#FBAF17',paleta.cyan||'#1FB2DE',paleta.teal||'#15BECE',paleta.green||'#A6CE38'];
-  var lineNames=['Calidad','Educación para Toda la Vida','Expansión','Experiencia','Transformación Organizacional','Sostenibilidad'];
+  /* ===== AVANCE DETAIL SLIDES (6 líneas) ===== */
+  lineIds.forEach(function (lid, idx) {
+    var a = avMap[lid] || {};
+    var pct      = parseInt(a.cumplimiento) || 0;
+    var esperado = parseInt(a.esperado)     || 100;
+    var real     = parseInt(a.real)         || 0;
+    var retos    = a.retos    || '0';
+    var areas    = a.areas    || '0';
+    var proyectos= a.proyectos|| '0';
+    var lineColor= lineColors[idx];
+    var slideId  = slideSuffixes[idx];
+    var lname    = lineNames[idx];
+    var textColor= (lid==='experiencia'||lid==='transformacion'||lid==='expansion'||lid==='sostenibilidad') ? '#0F385A' : 'white';
+    var logrosArr= (a.logros||'').split('|').map(function(s){return s.trim();}).filter(function(s){return s;});
 
-  lineIds.forEach(function(lid,idx){
-    var a=avMap[lid]||{};
-    var pct=parseInt(a.cumplimiento)||0;
-    var esperado=parseInt(a.esperado)||100;
-    var real=parseInt(a.real)||0;
-    var retos=a.retos||'0';
-    var areas=a.areas||'0';
-    var proyectos=a.proyectos||'0';
-    var cmi=a.cmi||'—';
-    var lineColor=lineColors[idx];
-    var slideId=slideSuffixes[idx];
-    var lname=lineNames[idx];
-    var lcolor=lineColor;
-    var logrosList=a.logros||'';
-    var logrosArr=logrosList.split('|').map(function(s){return s.trim();}).filter(function(s){return s;});
-    var dashReal=Math.round(real*2.39);
-    var dashEsp=Math.round(esperado*2.39);
-    var dashCum=Math.round(pct*2.39);
-    var textColor=(lid==='experiencia'||lid==='transformacion'||lid==='expansion'||lid==='sostenibilidad')?'#0F385A':'white';
-
-    h+='<div class="slide" id="slide-'+slideId+'" data-title="'+esc(lname)+'"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-    h+='<div style="background:'+lcolor+';padding:14px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0"><div style="flex:1"><div style="color:white;font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:0.85">PDI 2025 — Línea Estratégica</div><div style="color:white;font-weight:900;font-size:clamp(13px,1.8vw,24px);text-transform:uppercase;letter-spacing:1px;margin-top:2px">'+esc(lname)+'</div></div><img src="./public/img/brand/logo-poli.jpg" style="height:38px"></div>';
-    // 3 gauges + stats
-    h+='<div style="background:white;padding:16px 24px;display:flex;justify-content:center;gap:24px;flex-shrink:0;border-bottom:2px solid #eef2f7">';
-    h+=gauge(real,lcolor,'AVANCE REAL');
-    h+=gauge(esperado,'#15BECE','ESPERADO');
-    h+=gauge(pct,'#A6CE38','CUMPLIMIENTO');
-    h+='<div style="display:flex;flex-direction:column;gap:10px;justify-content:center;margin-left:20px"><div style="background:'+lcolor+'18;border:2px solid '+lcolor+'40;border-radius:12px;padding:10px 18px;text-align:center"><div style="font-size:1.6em;font-weight:900;color:'+lcolor+'">'+retos+'</div><div style="font-size:0.65em;color:#666;font-weight:700;text-transform:uppercase">RETOS</div></div><div style="background:#15BECE18;border:2px solid #15BECE40;border-radius:12px;padding:10px 18px;text-align:center"><div style="font-size:1.6em;font-weight:900;color:#15BECE">'+proyectos+'</div><div style="font-size:0.65em;color:#666;font-weight:700;text-transform:uppercase">PROYECTOS</div></div></div>';
-    h+='<div style="display:flex;flex-direction:column;gap:10px;justify-content:center"><div style="background:#0F385A10;border:2px solid #0F385A20;border-radius:12px;padding:10px 18px;text-align:center"><div style="font-size:1.2em;font-weight:900;color:#0F385A">'+areas+'</div><div style="font-size:0.62em;color:#666;font-weight:700;text-transform:uppercase">ÁREAS</div></div><div style="background:#A6CE3818;border:2px solid #A6CE3840;border-radius:12px;padding:10px 18px;text-align:center"><div style="font-size:0.75em;font-weight:800;color:#0F385A">CMI</div><div style="font-size:0.6em;color:#666;font-weight:700">ESTRATÉGICO</div></div></div></div>';
-    // Logros expandibles
-    h+='<div style="flex:1;overflow-y:auto;padding:12px 24px">';
-    if(logrosArr.length){
-      h+='<button onclick="toggleLogros(\''+slideId+'-l\')" style="width:100%;background:'+lcolor+';color:'+textColor+';border:none;border-radius:10px;padding:11px 18px;cursor:pointer;font-family:inherit;font-weight:800;font-size:0.82em;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.12);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span>📂</span><span>Principales Logros 2025</span><span style="margin-left:auto">▼</span></button>';
-      h+='<div id="'+slideId+'-l" style="display:none">';
-      logrosArr.forEach(function(logro){
-        var parts=logro.split('—');
-        var title=parts[0]||logro;
-        var desc=parts[1]||'';
-        h+='<div style="display:flex;align-items:flex-start;gap:9px;margin:6px 0;padding:9px 14px;background:white;border-radius:9px;border-left:4px solid '+lcolor+';box-shadow:0 1px 5px rgba(0,0,0,0.07)"><span style="font-size:1.1em;flex-shrink:0">🎯</span><div><div style="font-weight:800;color:'+lcolor+';font-size:0.8em">'+esc(title.trim())+'</div><div style="font-size:0.72em;color:#555;margin-top:2px;line-height:1.4">'+esc(desc.trim())+'</div></div></div>';
+    h += '<div class="slide" id="slide-'+slideId+'" data-title="'+esc(lname)+'"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
+    /* colored header */
+    h += '<div style="background:'+lineColor+';padding:14px 24px;display:flex;align-items:center;gap:12px;flex-shrink:0"><div style="flex:1"><div style="color:white;font-size:0.65em;font-weight:700;text-transform:uppercase;letter-spacing:1px;opacity:0.85">PDI 2025 — Línea Estratégica</div><div style="color:white;font-weight:900;font-size:clamp(13px,1.8vw,24px);text-transform:uppercase;letter-spacing:1px;margin-top:2px">'+esc(lname)+'</div></div><img src="./public/img/brand/logo-poli.jpg" style="height:38px"></div>';
+    /* gauges */
+    h += '<div class="gauge-row">';
+    h += gauge(real, lineColor, 'AVANCE REAL');
+    h += gauge(esperado, '#15BECE', 'ESPERADO');
+    h += gauge(pct, '#A6CE38', 'CUMPLIMIENTO');
+    h += '<div style="display:flex;flex-direction:column;gap:10px;justify-content:center;margin-left:20px">';
+    h += '<div style="background:'+lineColor+'18;border:2px solid '+lineColor+'40;border-radius:12px;padding:10px 18px;text-align:center"><div style="font-size:1.6em;font-weight:900;color:'+lineColor+'">'+retos+'</div><div style="font-size:0.65em;color:#666;font-weight:700;text-transform:uppercase">RETOS</div></div>';
+    h += '<div style="background:#15BECE18;border:2px solid #15BECE40;border-radius:12px;padding:10px 18px;text-align:center"><div style="font-size:1.6em;font-weight:900;color:#15BECE">'+proyectos+'</div><div style="font-size:0.65em;color:#666;font-weight:700;text-transform:uppercase">PROYECTOS</div></div></div>';
+    h += '<div style="display:flex;flex-direction:column;gap:10px;justify-content:center"><div style="background:#0F385A10;border:2px solid #0F385A20;border-radius:12px;padding:10px 18px;text-align:center"><div style="font-size:1.2em;font-weight:900;color:#0F385A">'+areas+'</div><div style="font-size:0.62em;color:#666;font-weight:700;text-transform:uppercase">ÁREAS</div></div></div>';
+    h += '</div>';
+    /* animated bars */
+    h += '<div style="padding:10px 28px 12px;background:white;border-bottom:2px solid #eef2f7;flex-shrink:0;">';
+    h += barRow('Avance Real', real, lineColor);
+    h += barRow('Esperado', esperado, '#15BECE');
+    h += barRow('Cumplimiento', pct, '#A6CE38');
+    h += '</div>';
+    /* logros expandibles */
+    h += '<div style="flex:1;overflow-y:auto;padding:12px 24px">';
+    if (logrosArr.length) {
+      h += '<button onclick="toggleLogros(\''+slideId+'-l\')" style="width:100%;background:'+lineColor+';color:'+textColor+';border:none;border-radius:10px;padding:11px 18px;cursor:pointer;font-family:inherit;font-weight:800;font-size:0.82em;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.12);margin-bottom:10px;display:flex;align-items:center;gap:8px"><span>📂</span><span>Principales Logros 2025</span><span style="margin-left:auto">▼</span></button>';
+      h += '<div id="'+slideId+'-l" style="display:none">';
+      logrosArr.forEach(function (logro) {
+        var parts = logro.split('—'), title = parts[0]||logro, desc = parts[1]||'';
+        h += '<div style="display:flex;align-items:flex-start;gap:9px;margin:6px 0;padding:9px 14px;background:white;border-radius:9px;border-left:4px solid '+lineColor+';box-shadow:0 1px 5px rgba(0,0,0,0.07)"><span style="font-size:1.1em;flex-shrink:0">🎯</span><div><div style="font-weight:800;color:'+lineColor+';font-size:0.8em">'+esc(title.trim())+'</div><div style="font-size:0.72em;color:#555;margin-top:2px;line-height:1.4">'+esc(desc.trim())+'</div></div></div>';
       });
-      h+='</div>';
+      h += '</div>';
     }
-    h+='<div style="margin-top:10px;background:white;border-radius:10px;padding:10px 14px;border:1px solid #e0e8f0;font-size:0.68em;color:#888">Fuente: Kawak — Sistema de Gestión de Retos y Proyectos PDI 2022–2026. Corte: diciembre 2025.</div></div></div></div>';
+    h += '<div style="margin-top:10px;background:white;border-radius:10px;padding:10px 14px;border:1px solid #e0e8f0;font-size:0.68em;color:#888">Fuente: Kawak — Sistema de Gestión de Retos y Proyectos PDI 2022–2026. Corte: diciembre 2025.</div>';
+    h += '</div></div></div>';
   });
 
   /* ===== LOGROS OVERVIEW ===== */
-  h+='<div class="slide" id="slide-logros" data-title="Logros por Línea Estratégica"><div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
-  h+='<div style="background:#0F385A;padding:14px 22px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🏆</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Logros por Línea Estratégica 2025</span></div>';
-  h+='<div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:12px;padding:14px 20px">';
-  var logroSvgs={
+  var logroSvgs = {
     calidad:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="16" r="10" stroke="white" stroke-width="2"/><path d="M15 26l5 8 5-8" stroke="white" stroke-width="2"/><path d="M13 29h14" stroke="white" stroke-width="2"/><circle cx="20" cy="16" r="5" stroke="white" stroke-width="1.5"/><path d="M17.5 16l2 2 3-3" stroke="white" stroke-width="1.5"/></svg>',
     expansion:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="14" stroke="white" stroke-width="2"/><path d="M6 20h28M20 6v28" stroke="white" stroke-width="1.5"/><path d="M9 9 l22 22M9 31 l22-22" stroke="white" stroke-width="1.2" stroke-dasharray="2 2"/><circle cx="20" cy="20" r="3" fill="white"/></svg>',
     educacion:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><ellipse cx="20" cy="13" rx="10" ry="7" stroke="white" stroke-width="2"/><path d="M10 20c0 6 4 10 10 10s10-4 10-10" stroke="white" stroke-width="2"/><path d="M14 26l2 5h8l2-5" stroke="white" stroke-width="1.5"/><circle cx="20" cy="13" r="3" stroke="white" stroke-width="1.5"/><path d="M17 12l1.5 1.5 2.5-2.5" stroke="white" stroke-width="1.2"/></svg>',
-    experiencia:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="14" cy="15" r="5" stroke="white" stroke-width="2"/><circle cx="26" cy="15" r="5" stroke="white" stroke-width="2"/><path d="M7 32c0-5 3-9 7-9M33 32c0-5-3-9-7-9M17 32c0-5 3-9 6-8" stroke="white" stroke-width="1.5"/><path d="M11 6l1.5 3 3.5.5-2.5 2.5.5 3.5L11 14l-3 1.5.5-3.5L6 9.5l3.5-.5z" stroke="white" stroke-width="1.2"/><path d="M28 6l1.5 3 3.5.5-2.5 2.5.5 3.5L28 14l-3 1.5.5-3.5-2.5-2.5 3.5-.5z" stroke="white" stroke-width="1.2"/></svg>',
+    experiencia:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="14" cy="15" r="5" stroke="white" stroke-width="2"/><circle cx="26" cy="15" r="5" stroke="white" stroke-width="2"/><path d="M7 32c0-5 3-9 7-9M33 32c0-5-3-9-7-9M17 32c0-5 3-9 6-8" stroke="white" stroke-width="1.5"/></svg>',
     transformacion:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect x="8" y="8" width="10" height="10" rx="2" stroke="white" stroke-width="2"/><rect x="22" y="8" width="10" height="10" rx="2" stroke="white" stroke-width="2"/><rect x="8" y="22" width="10" height="10" rx="2" stroke="white" stroke-width="2"/><rect x="22" y="22" width="10" height="10" rx="2" stroke="white" stroke-width="2"/><path d="M18 13h4M13 18v4M27 18v4M22 27h-4" stroke="white" stroke-width="1.5"/></svg>',
-    sostenibilidad:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="13" stroke="white" stroke-width="2"/><path d="M7 20h26" stroke="white" stroke-width="1.5"/><path d="M20 7C20 7 12 13 12 20s8 13 8 13" stroke="white" stroke-width="1.5"/><path d="M20 7c0 0 8 6 8 13s-8 13-8 13" stroke="white" stroke-width="1.5"/><path d="M8.5 13.5h23M8.5 26.5h23" stroke="white" stroke-width="1"/></svg>'
+    sostenibilidad:'<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><circle cx="20" cy="20" r="13" stroke="white" stroke-width="2"/><path d="M7 20h26" stroke="white" stroke-width="1.5"/><path d="M20 7C20 7 12 13 12 20s8 13 8 13" stroke="white" stroke-width="1.5"/><path d="M20 7c0 0 8 6 8 13s-8 13-8 13" stroke="white" stroke-width="1.5"/></svg>'
   };
-  lineIds.forEach(function(lid,idx){
-    var lcolor=lineColors[idx];
-    var lname=lineNames[idx];
-    var svg=logroSvgs[lid]||'';
-    var textCol=(lid==='experiencia'||lid==='transformacion'||lid==='expansion'||lid==='sostenibilidad')?'#0F385A':'white';
-    h+='<div onclick="goTo(\''+slideSuffixes[idx].replace('-avance','-logro')+'\')" style="background:'+lcolor+';border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;padding:14px;text-align:center;box-shadow:0 3px 14px rgba(0,0,0,0.12);" onmouseenter="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 8px 24px rgba(0,0,0,0.22)\'" onmouseleave="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 3px 14px rgba(0,0,0,0.12)\'"><div style="width:42px;height:42px">'+svg+'</div><span style="color:'+textCol+';font-size:clamp(9px,0.95vw,12px);font-weight:900;text-transform:uppercase;letter-spacing:0.5px;line-height:1.2">'+(lid==='transformacion'?'TRANSFORMACIÓN':esc(lname.toUpperCase()))+'</span></div>';
+  h += '<div class="slide" id="slide-logros" data-title="Logros por Línea Estratégica"><div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
+  h += '<div style="background:var(--navy);padding:14px 22px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🏆</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Logros por Línea Estratégica 2025</span></div>';
+  h += '<div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:12px;padding:14px 20px">';
+  lineIds.forEach(function (lid, idx) {
+    var lc = lineColors[idx], ln = lineNames[idx], sv = logroSvgs[lid]||'';
+    var tc = (lid==='experiencia'||lid==='transformacion'||lid==='expansion'||lid==='sostenibilidad') ? '#0F385A' : 'white';
+    h += '<div onclick="goTo(\''+slideSuffixes[idx].replace('-avance','-logro')+'\')" style="background:'+lc+';border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;padding:14px;text-align:center;box-shadow:0 3px 14px rgba(0,0,0,0.12);" onmouseenter="this.style.transform=\'translateY(-4px)\';this.style.boxShadow=\'0 8px 24px rgba(0,0,0,0.22)\'" onmouseleave="this.style.transform=\'translateY(0)\';this.style.boxShadow=\'0 3px 14px rgba(0,0,0,0.12)\'"><div style="width:42px;height:42px">'+sv+'</div><span style="color:'+tc+';font-size:clamp(9px,0.95vw,12px);font-weight:900;text-transform:uppercase;letter-spacing:0.5px;line-height:1.2">'+esc(ln.toUpperCase())+'</span></div>';
   });
-  h+='</div></div></div>';
+  h += '</div></div></div>';
 
   /* ===== LOGRO DETAIL SLIDES ===== */
-  var logroImages={
-    calidad:'./public/img/logros/GP051-_INFOGRAFIAS_CAP_12_CALIDAD_1.jpg',
-    expansion:'./public/img/logros/GP051-_INFOGRAFIAS_CAP_12_EXPANSION.jpg',
-    educacion:'./public/img/logros/GP051-_INFOGRAFIAS_CAP_12_EDUVIDA.jpg',
-    experiencia:'./public/img/logros/GP051-_INFOGRAFIAS_CAP_12_EXPERIENCIA.jpg',
-    transformacion:'./public/img/logros/GP051-_INFOGRAFIAS_CAP_12_TRANSFORMACION_1.jpg',
-    sostenibilidad:'./public/img/logros/GP051-_INFOGRAFIAS_CAP_12_SOSTENIBILIDAD_1.jpg'
+  var logroImages = {
+    calidad:        './public/img/logros/GP051-_INFOGRAFIAS_CAP_12_CALIDAD_1.jpg',
+    expansion:      './public/img/logros/GP051-_INFOGRAFIAS_CAP_12_EXPANSION.jpg',
+    educacion:      './public/img/logros/GP051-_INFOGRAFIAS_CAP_12_EDUVIDA.jpg',
+    experiencia:    './public/img/logros/GP051-_INFOGRAFIAS_CAP_12_EXPERIENCIA.jpg',
+    transformacion: './public/img/logros/GP051-_INFOGRAFIAS_CAP_12_TRANSFORMACION_1.jpg',
+    sostenibilidad: './public/img/logros/GP051-_INFOGRAFIAS_CAP_12_SOSTENIBILIDAD_1.jpg'
   };
-  lineIds.forEach(function(lid,idx){
-    var lcolor=lineColors[idx];
-    var lname=lineNames[idx];
-    var img=logroImages[lid]||'';
-    var textCol=(lid==='experiencia'||lid==='transformacion'||lid==='expansion'||lid==='sostenibilidad')?'#0F385A':'white';
-    h+='<div class="slide" id="slide-'+slideSuffixes[idx].replace('-avance','-logro')+'" data-title="'+esc(lname)+' – Logros 2025"><div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
-    h+='<div style="background:'+lcolor+';padding:10px 20px;flex-shrink:0"><span style="color:'+textCol+';font-weight:900;font-size:clamp(11px,1.4vw,17px);text-transform:uppercase">'+esc(lname)+' – Logros 2025</span></div>';
-    h+='<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden;">';
-    if(img){h+='<img src="'+esc(img)+'" style="max-width:100%;max-height:100%;object-fit:contain">';}
-    else{h+='<div style="text-align:center;color:#888">Infografía no disponible</div>';}
-    h+='</div></div></div>';
+  lineIds.forEach(function (lid, idx) {
+    var lc = lineColors[idx], ln = lineNames[idx], img = logroImages[lid]||'';
+    var tc = (lid==='experiencia'||lid==='transformacion'||lid==='expansion'||lid==='sostenibilidad') ? '#0F385A' : 'white';
+    var logroId = slideSuffixes[idx].replace('-avance','-logro');
+    h += '<div class="slide" id="slide-'+logroId+'" data-title="'+esc(ln)+' – Logros 2025"><div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
+    h += '<div style="background:'+lc+';padding:10px 20px;flex-shrink:0"><span style="color:'+tc+';font-weight:900;font-size:clamp(11px,1.4vw,17px);text-transform:uppercase">'+esc(ln)+' – Logros 2025</span></div>';
+    h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:10px;overflow:hidden;">';
+    h += img ? '<img src="'+esc(img)+'" style="max-width:100%;max-height:100%;object-fit:contain">' : '<div style="text-align:center;color:#888">Infografía no disponible</div>';
+    h += '</div></div></div>';
   });
 
   /* ===== PLANES ===== */
-  h+='<div class="slide" id="slide-planes" data-title="Planes Anuales de Retos"><div class="sf" style="background:white;display:flex;flex-direction:column;">';
-  h+='<div style="background:#0F385A;padding:14px 22px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">📋</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Planes Anuales de Retos</span></div>';
-  h+='<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px 36px;background:#f8fafe"><div style="display:flex;gap:16px;width:100%;max-width:860px">';
-  var planCards=[{id:'reporte',bg:'#1FB2DE',icon:'📊',title:'Reporte Anual<br>Institucional',desc:'Avance y cumplimiento 2022–2024'},{id:'unidad',bg:'#EC0677',icon:'🏢',title:'Unidad – Área',desc:'Cumplimiento por área organizacional'},{id:'lineas-est',bg:'#A6CE38',icon:'🎯',title:'Líneas<br>Estratégicas',desc:'Avance por línea PDI 2025'},{id:'objetivos',bg:'#FBAF17',icon:'✓',title:'Objetivos<br>Estratégicos',desc:'CMI Estratégico institucional'}];
-  planCards.forEach(function(pc){
-    h+='<div onclick="goTo(\''+pc.id+'\')" style="background:'+pc.bg+';border-radius:16px;padding:22px 18px;flex:1;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.15s;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;min-height:160px" onmouseenter="this.style.transform=\'translateY(-5px)\'" onmouseleave="this.style.transform=\'translateY(0)\'"><div style="background:rgba(255,255,255,0.22);border-radius:12px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:1.7em">'+pc.icon+'</div><div style="font-weight:900;color:'+(pc.bg==='#EC0677'?'white':'#0F385A')+';font-size:clamp(10px,1.0vw,13px);text-transform:uppercase;letter-spacing:0.5px;line-height:1.25">'+pc.title+'</div><div style="font-size:0.66em;color:'+(pc.bg==='#EC0677'?'rgba(255,255,255,0.8)':'rgba(15,56,90,0.8)')+';line-height:1.3">'+pc.desc+'</div></div>';
+  h += '<div class="slide" id="slide-planes" data-title="Planes Anuales de Retos"><div class="sf" style="background:white;display:flex;flex-direction:column;">';
+  h += '<div style="background:var(--navy);padding:14px 22px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">📋</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Planes Anuales de Retos</span></div>';
+  h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:24px 36px;background:#f8fafe"><div style="display:flex;gap:16px;width:100%;max-width:860px">';
+  [{id:'reporte',bg:'#1FB2DE',icon:'📊',title:'Reporte Anual<br>Institucional',desc:'Avance y cumplimiento 2022–2024'},{id:'unidad',bg:'#EC0677',icon:'🏢',title:'Unidad – Área',desc:'Cumplimiento por área organizacional'},{id:'lineas-est',bg:'#A6CE38',icon:'🎯',title:'Líneas<br>Estratégicas',desc:'Avance por línea PDI 2025'},{id:'objetivos',bg:'#FBAF17',icon:'✓',title:'Objetivos<br>Estratégicos',desc:'CMI Estratégico institucional'}].forEach(function (pc) {
+    var tc = pc.bg==='#EC0677' ? 'white' : '#0F385A';
+    h += '<div onclick="goTo(\''+pc.id+'\')" style="background:'+pc.bg+';border-radius:16px;padding:22px 18px;flex:1;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.14);transition:transform 0.15s;display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;min-height:160px" onmouseenter="this.style.transform=\'translateY(-5px)\'" onmouseleave="this.style.transform=\'translateY(0)\'"><div style="background:rgba(255,255,255,0.22);border-radius:12px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:1.7em">'+pc.icon+'</div><div style="font-weight:900;color:'+tc+';font-size:clamp(10px,1.0vw,13px);text-transform:uppercase;letter-spacing:0.5px;line-height:1.25">'+pc.title+'</div><div style="font-size:0.66em;color:'+(pc.bg==='#EC0677'?'rgba(255,255,255,0.8)':'rgba(15,56,90,0.8)')+';line-height:1.3">'+pc.desc+'</div></div>';
   });
-  h+='</div></div></div></div>';
+  h += '</div></div></div></div>';
 
   /* ===== REPORTE ===== */
-  h+='<div class="slide" id="slide-reporte" data-title="Reporte Anual Institucional"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-  h+='<div style="background:#1FB2DE;padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">📊</span><span style="color:#0F385A;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Reporte Anual Institucional</span></div>';
-  h+='<div style="flex:1;display:flex;flex-direction:column;padding:20px 28px;gap:16px;justify-content:center">';
-  h+='<div style="display:flex;gap:20px;align-items:flex-end;justify-content:center">';
-  var years=[{anio:2022,pct:96,alt:70,planes:33,color:'#0F385A'},{anio:2023,pct:97,alt:105,planes:55,color:'#A6CE38'},{anio:2024,pct:98,alt:140,planes:83,color:'#1FB2DE'}];
-  years.forEach(function(yr){
-    h+='<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="color:'+yr.color+';font-weight:900;font-size:0.85em">'+yr.pct+'%</div><div style="width:80px;height:'+yr.alt+'px;background:'+yr.color+';border-radius:10px 10px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:10px"><span style="color:white;font-weight:900;font-size:0.9em">'+yr.planes+'</span></div><div style="font-weight:700;color:#0F385A;font-size:0.78em">'+yr.anio+'</div><div style="font-size:0.65em;color:#888">'+yr.planes+' planes</div></div>';
+  h += '<div class="slide" id="slide-reporte" data-title="Reporte Anual Institucional"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
+  h += '<div style="background:var(--cyan);padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">📊</span><span style="color:var(--navy);font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Reporte Anual Institucional</span></div>';
+  h += '<div style="flex:1;display:flex;flex-direction:column;padding:20px 28px;gap:16px;justify-content:center">';
+  h += '<div style="display:flex;gap:20px;align-items:flex-end;justify-content:center">';
+  [{anio:2022,pct:96,alt:70,planes:33,color:'#0F385A'},{anio:2023,pct:97,alt:105,planes:55,color:'#A6CE38'},{anio:2024,pct:98,alt:140,planes:83,color:'#1FB2DE'}].forEach(function (yr) {
+    h += '<div style="display:flex;flex-direction:column;align-items:center;gap:8px"><div style="color:'+yr.color+';font-weight:900;font-size:0.85em">'+yr.pct+'%</div><div style="width:80px;height:'+yr.alt+'px;background:'+yr.color+';border-radius:10px 10px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:10px"><span style="color:white;font-weight:900;font-size:0.9em">'+yr.planes+'</span></div><div style="font-weight:700;color:var(--navy);font-size:0.78em">'+yr.anio+'</div><div style="font-size:0.65em;color:#888">'+yr.planes+' planes</div></div>';
   });
-  h+='</div>';
-  h+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">';
-  years.forEach(function(yr){
-    h+='<div style="background:white;border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.08);border-top:4px solid '+yr.color+'"><div style="font-size:0.65em;color:#888;font-weight:700;text-transform:uppercase;margin-bottom:6px">'+yr.anio+'</div><div style="font-size:1.8em;font-weight:900;color:'+yr.color+'">'+yr.pct+'%</div><div style="font-size:0.65em;color:#666;margin-top:4px">Cumplimiento global</div><div style="font-size:0.65em;color:#888">'+yr.planes+' planes evaluados</div></div>';
+  h += '</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">';
+  [{anio:2022,pct:96,planes:33,color:'#0F385A'},{anio:2023,pct:97,planes:55,color:'#A6CE38'},{anio:2024,pct:98,planes:83,color:'#1FB2DE'}].forEach(function (yr) {
+    h += '<div style="background:white;border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.08);border-top:4px solid '+yr.color+'"><div style="font-size:0.65em;color:#888;font-weight:700;text-transform:uppercase;margin-bottom:6px">'+yr.anio+'</div><div style="font-size:1.8em;font-weight:900;color:'+yr.color+'">'+yr.pct+'%</div><div style="font-size:0.65em;color:#666;margin-top:4px">Cumplimiento global</div><div style="font-size:0.65em;color:#888">'+yr.planes+' planes evaluados</div></div>';
   });
-  h+='</div></div></div></div>';
+  h += '</div></div></div></div>';
 
   /* ===== UNIDAD ===== */
-  h+='<div class="slide" id="slide-unidad" data-title="Unidad – Área"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
-  h+='<div style="background:#EC0677;padding:13px 22px;flex-shrink:0;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">🏢</span><span style="color:white;font-weight:900;font-size:clamp(12px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Tablero por Unidad — Área</span></div>';
-  h+='<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:30px;background:#f8fafe"><div style="background:white;border-radius:16px;padding:28px 40px;box-shadow:0 4px 18px rgba(0,0,0,0.08);text-align:center;max-width:560px;border:2px solid #eef2f7"><div style="font-size:3em;margin-bottom:12px">⏳</div><div style="font-weight:900;color:#0F385A;font-size:1.15em;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Información Pendiente</div><div style="color:#666;font-size:0.83em;line-height:1.6">Los tableros de seguimiento por unidad y área estarán disponibles próximamente. Contacte a la Gerencia de Planeación y Gestión.</div></div>';
-  h+='<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">';
-  unidades.forEach(function(u){
-    var col=u.color||'#0F385A';
-    h+='<div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);display:flex;align-items:center;gap:8px;border:2px solid '+col+'20"><div style="background:'+col+';width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1em">🏛️</div><span style="font-size:0.76em;font-weight:700;color:#0F385A">'+esc(u.nombre)+'</span></div>';
+  h += '<div class="slide" id="slide-unidad" data-title="Unidad – Área"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
+  h += '<div style="background:var(--pink);padding:13px 22px;flex-shrink:0;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">🏢</span><span style="color:white;font-weight:900;font-size:clamp(12px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Tablero por Unidad — Área</span></div>';
+  h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:30px;background:#f8fafe"><div style="background:white;border-radius:16px;padding:28px 40px;box-shadow:0 4px 18px rgba(0,0,0,0.08);text-align:center;max-width:560px;border:2px solid #eef2f7"><div style="font-size:3em;margin-bottom:12px">⏳</div><div style="font-weight:900;color:var(--navy);font-size:1.15em;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Información Pendiente</div><div style="color:#666;font-size:0.83em;line-height:1.6">Los tableros de seguimiento por unidad y área estarán disponibles próximamente. Contacte a la Gerencia de Planeación y Gestión.</div></div>';
+  h += '<div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">';
+  unidades.forEach(function (u) {
+    var col = u.color||'#0F385A';
+    h += '<div style="background:white;border-radius:10px;padding:10px 14px;box-shadow:0 2px 8px rgba(0,0,0,0.07);display:flex;align-items:center;gap:8px;border:2px solid '+col+'20"><div style="background:'+col+';width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1em">🏛️</div><span style="font-size:0.76em;font-weight:700;color:var(--navy)">'+esc(u.nombre)+'</span></div>';
   });
-  h+='</div></div></div></div>';
+  h += '</div></div></div></div>';
 
-  /* ===== LINEAS-EST ===== */
-  h+='<div class="slide" id="slide-lineas-est" data-title="Líneas Estratégicas"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-  h+='<div style="background:#A6CE38;padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🎯</span><span style="color:#0F385A;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Líneas Estratégicas — Avance 2025</span></div>';
-  h+='<div style="flex:1;display:flex;flex-direction:column;padding:16px 28px;gap:9px;justify-content:center">';
-  var lineLE=[{id:'sostenibilidad',color:'#A6CE38',icon:'🌿',retos:'42',areas:'29',pct:'89%',pctColor:'#0F385A',bgColor:'#A6CE38'},{id:'calidad',color:'#EC0677',icon:'🏅',retos:'103',areas:'45',pct:'99%',pctColor:'white',bgColor:'#EC0677'},{id:'expansion',color:'#FBAF17',icon:'📈',retos:'40',areas:'23',pct:'95%',pctColor:'#0F385A',bgColor:'#FBAF17'},{id:'experiencia',color:'#1FB2DE',icon:'⭐',retos:'108',areas:'55',pct:'99%',pctColor:'#0F385A',bgColor:'#1FB2DE'},{id:'educacion',color:'#0F385A',icon:'📚',retos:'18',areas:'14',pct:'95%',pctColor:'white',bgColor:'#0F385A'},{id:'transformacion',color:'#15BECE',icon:'⚙️',retos:'63',areas:'35',pct:'86%',pctColor:'#0F385A',bgColor:'#15BECE'}];
-  lineLE.forEach(function(ll){
-    var a=avMap[ll.id]||{};
-    h+='<div style="background:white;border-radius:12px;padding:12px 18px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border-left:5px solid '+ll.color+'"><span style="font-size:1.3em">'+ll.icon+'</span><div style="flex:1"><div style="font-weight:900;font-size:0.88em;color:#0F385A">'+esc(lineNameMap[ll.id]||ll.id)+'</div><div style="font-size:0.65em;color:#888;margin-top:1px">'+(a.retos||ll.retos)+' retos · '+(a.areas||ll.areas)+' áreas comprometidas</div></div><div style="background:'+ll.bgColor+';color:'+ll.pctColor+';border-radius:8px;padding:4px 14px;font-weight:900;font-size:0.9em">'+(a.cumplimiento?Math.round(a.cumplimiento)+'%':ll.pct)+'</div></div>';
+  /* ===== LINEAS-EST (con HEATMAP) ===== */
+  h += '<div class="slide" id="slide-lineas-est" data-title="Líneas Estratégicas"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
+  h += '<div style="background:var(--green);padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🎯</span><span style="color:var(--navy);font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Líneas Estratégicas — Avance 2025</span></div>';
+  h += '<div style="flex:1;display:flex;gap:20px;padding:16px 28px;overflow:hidden;">';
+  /* left: lista */
+  h += '<div style="flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center;">';
+  var lineLE = [{id:'sostenibilidad',icon:'🌿'},{id:'calidad',icon:'🏅'},{id:'expansion',icon:'📈'},{id:'experiencia',icon:'⭐'},{id:'educacion',icon:'📚'},{id:'transformacion',icon:'⚙️'}];
+  lineLE.forEach(function (ll) {
+    var a = avMap[ll.id] || {};
+    var lc = colorMap[ll.id];
+    h += '<div style="background:white;border-radius:12px;padding:10px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border-left:5px solid '+lc+'"><span style="font-size:1.2em">'+ll.icon+'</span><div style="flex:1"><div style="font-weight:900;font-size:0.86em;color:var(--navy)">'+esc(lineNameMap[ll.id])+'</div><div style="font-size:0.63em;color:#888;margin-top:1px">'+(a.retos||'—')+' retos · '+(a.areas||'—')+' áreas</div></div><div style="background:'+lc+';color:'+(ll.id==='calidad'||ll.id==='educacion'?'white':'#0F385A')+';border-radius:8px;padding:4px 14px;font-weight:900;font-size:0.9em">'+(a.cumplimiento ? Math.round(a.cumplimiento)+'%' : '—')+'</div></div>';
   });
-  h+='</div></div></div>';
+  h += '</div>';
+  /* right: heatmap */
+  h += '<div style="flex:0 0 260px;display:flex;flex-direction:column;gap:8px;justify-content:center;">';
+  h += '<div style="font-weight:900;color:var(--navy);font-size:0.78em;text-transform:uppercase;letter-spacing:1px;text-align:center;margin-bottom:2px;">Mapa de Cumplimiento</div>';
+  h += '<div class="hm-grid">';
+  h += '<div class="hm-head" style="background:var(--navy)">Línea</div>';
+  h += '<div class="hm-head" style="background:var(--cyan)">Real %</div>';
+  h += '<div class="hm-head" style="background:var(--teal)">Esperado %</div>';
+  lineIds.forEach(function (lid) {
+    var a = avMap[lid] || {};
+    var real = parseInt(a.real) || 0;
+    var esp  = parseInt(a.esperado) || 100;
+    var rc   = heatColor(real), rt = heatTextColor(real);
+    var ec   = heatColor(esp),  et = heatTextColor(esp);
+    var short = {calidad:'Calidad',educacion:'Educación',expansion:'Expansión',experiencia:'Experiencia',transformacion:'Transform.',sostenibilidad:'Sostenib.'};
+    h += '<div class="hm-name">'+short[lid]+'</div>';
+    h += '<div class="hm-cell" style="background:'+rc+';color:'+rt+'">'+real+'%</div>';
+    h += '<div class="hm-cell" style="background:'+ec+';color:'+et+'">'+esp+'%</div>';
+  });
+  h += '</div>';
+  h += '<div style="display:flex;gap:6px;margin-top:6px;justify-content:center;flex-wrap:wrap;">';
+  [['#A6CE38','≥95%'],['#1FB2DE','85–94%'],['#FBAF17','70–84%'],['#EC0677','<70%']].forEach(function(lg){ h += '<div style="display:flex;align-items:center;gap:3px;font-size:0.6em;font-weight:700;color:#555"><div style="width:10px;height:10px;border-radius:3px;background:'+lg[0]+'"></div>'+lg[1]+'</div>'; });
+  h += '</div></div></div></div></div>';
 
   /* ===== OBJETIVOS ===== */
-  h+='<div class="slide" id="slide-objetivos" data-title="Objetivos Estratégicos"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-  h+='<div style="background:#FBAF17;padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🎯</span><span style="color:#0F385A;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Objetivos Estratégicos — Cumplimiento 2025</span></div>';
-  h+='<div style="flex:1;overflow-y:auto;padding:14px 22px;display:flex;flex-direction:column;gap:7px">';
-  obj.forEach(function(o){
-    var real=parseInt(o.real)||0;
-    var color='#A6CE38';
-    if(real>=98)color='#A6CE38';
-    else if(real>=90)color='#1FB2DE';
-    else if(real>=80)color='#FBAF17';
-    else color='#EC0677';
-    var textColor=real<80?'white':'#0F385A';
-    if(color==='#EC0677')textColor='white';
-    var linea=o.linea||'';
-    var lc=colorMap[linea]||'#0F385A';
-    h+='<div style="display:flex;align-items:center;gap:10px;background:white;border-radius:9px;padding:8px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.07)"><div style="background:'+lc+';color:white;border-radius:6px;padding:3px 10px;font-weight:900;font-size:0.82em;flex-shrink:0;min-width:46px;text-align:center">'+real+'%</div><div style="font-size:0.76em;color:#333;line-height:1.3">'+esc(o.nombre)+'</div></div>';
+  h += '<div class="slide" id="slide-objetivos" data-title="Objetivos Estratégicos"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
+  h += '<div style="background:var(--yellow);padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🎯</span><span style="color:var(--navy);font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Objetivos Estratégicos — Cumplimiento 2025</span></div>';
+  h += '<div style="flex:1;overflow-y:auto;padding:14px 22px;display:flex;flex-direction:column;gap:7px">';
+  obj.forEach(function (o) {
+    var real = parseInt(o.real) || 0;
+    var col = real>=95?'#A6CE38':real>=85?'#1FB2DE':real>=70?'#FBAF17':'#EC0677';
+    var tc  = real<70 ? 'white' : '#0F385A';
+    var lc  = colorMap[o.linea] || '#0F385A';
+    h += '<div style="display:flex;align-items:center;gap:10px;background:white;border-radius:9px;padding:8px 12px;box-shadow:0 1px 4px rgba(0,0,0,0.07)"><div style="background:'+lc+';color:white;border-radius:6px;padding:3px 10px;font-weight:900;font-size:0.82em;flex-shrink:0;min-width:46px;text-align:center">'+real+'%</div><div style="font-size:0.76em;color:#333;line-height:1.3">'+esc(o.nombre)+'</div></div>';
   });
-  h+='</div></div></div>';
+  h += '</div></div></div>';
 
-  /* ===== PROYECTOS ===== */
-  h+='<div class="slide" id="slide-proyectos" data-title="Proyectos Estratégicos"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-  h+='<div style="background:#0F385A;padding:14px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🗂️</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Proyectos Estratégicos PDI 2025</span></div>';
-  h+='<div style="flex:1;overflow-y:auto;padding:14px 22px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
-  proy.forEach(function(p){
-    var lc=colorMap[p.linea]||'#0F385A';
-    var ln=lineNameMap[p.linea]||p.linea||'';
-    var avance=parseInt(p.avance)||0;
-    h+='<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:white;border-radius:10px;border-left:4px solid '+lc+';box-shadow:0 1px 5px rgba(0,0,0,0.07);margin-bottom:7px"><span style="font-size:1.1em">📋</span><div style="flex:1"><div style="font-size:0.63em;font-weight:900;color:'+lc+';text-transform:uppercase">'+esc(ln)+'</div><div style="font-size:0.78em;font-weight:700;color:#0F385A">'+esc(p.nombre)+'</div></div><div style="background:'+lc+';color:white;border-radius:16px;padding:2px 9px;font-size:0.72em;font-weight:900">'+avance+'%</div></div>';
+  /* ===== PROYECTOS (con TIMELINE) ===== */
+  h += '<div class="slide" id="slide-proyectos" data-title="Proyectos Estratégicos"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
+  h += '<div style="background:var(--navy);padding:12px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🗂️</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Proyectos Estratégicos PDI 2025</span><div class="toggle-btns" style="margin-left:auto"><button id="btn-proy-grid" class="active" onclick="setProyView(\'grid\')">Vista Grid</button><button id="btn-proy-tl" onclick="setProyView(\'tl\')">Vista Timeline</button></div></div>';
+
+  /* grid view */
+  h += '<div id="proy-grid-view" style="flex:1;overflow-y:auto;padding:14px 22px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+  proy.forEach(function (p) {
+    var lc = colorMap[p.linea] || '#0F385A';
+    var ln = lineNameMap[p.linea] || p.linea || '';
+    var av = parseInt(p.avance) || 0;
+    h += '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:white;border-radius:10px;border-left:4px solid '+lc+';box-shadow:0 1px 5px rgba(0,0,0,0.07);margin-bottom:4px"><span style="font-size:1.1em">📋</span><div style="flex:1"><div style="font-size:0.63em;font-weight:900;color:'+lc+';text-transform:uppercase">'+esc(ln)+'</div><div style="font-size:0.78em;font-weight:700;color:var(--navy)">'+esc(p.nombre)+'</div></div><div style="background:'+lc+';color:white;border-radius:16px;padding:2px 9px;font-size:0.72em;font-weight:900">'+av+'%</div></div>';
   });
-  h+='</div></div></div></div>';
+  h += '</div></div>';
+
+  /* timeline view */
+  h += '<div id="proy-tl-view" style="display:none;flex:1;overflow-y:auto;padding:14px 22px">';
+  lineIds.forEach(function (lid) {
+    var lc = colorMap[lid], ln = lineNameMap[lid];
+    var items = proy.filter(function (p) { return p.linea === lid; });
+    if (!items.length) return;
+    h += '<div style="margin-bottom:14px"><div style="font-size:0.7em;font-weight:900;color:'+lc+';text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;padding:4px 10px;background:'+lc+'18;border-radius:6px;border-left:3px solid '+lc+'">'+esc(ln)+'</div>';
+    items.forEach(function (p) {
+      var av = parseInt(p.avance) || 0;
+      var tc = av >= 50 ? 'white' : lc;
+      h += '<div class="tl-bar-wrap"><div class="tl-label" title="'+esc(p.nombre)+'">'+esc(p.nombre)+'</div><div class="tl-track"><div class="tl-fill" data-pct="'+av+'" style="width:0%;background:'+lc+';"><span style="color:white">'+av+'%</span></div></div><div class="tl-pct" style="color:'+lc+'">'+av+'%</div></div>';
+    });
+    h += '</div>';
+  });
+  h += '</div></div></div>';
 
   /* ===== BALANCE ===== */
-  h+='<div class="slide" id="slide-balance" data-title="Balance Institucional 2025"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
-  h+='<div style="background:#0F385A;padding:13px 22px;flex-shrink:0;display:flex;align-items:center;gap:12px"><img src="./public/img/brand/logo-poli.jpg" style="height:28px"><span style="color:white;font-weight:900;font-size:clamp(12px,1.7vw,24px);text-transform:uppercase;letter-spacing:2px">Cierre Año 2025</span></div>';
-  h+='<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:28px;padding:22px 40px;background:#f8fafe">';
-  h+='<div onclick="window.open(\'https://www.youtube.com/watch?v=2dFsBLSEp7c&t=294s\',\'_blank\')" style="flex:1;max-width:390px;background:white;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(15,56,90,0.14);transition:transform 0.2s;border:2px solid #eef2f7" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'"><div style="background:#0F385A;padding:14px 18px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">▶️</span><div><div style="color:white;font-weight:900;font-size:0.88em;text-transform:uppercase">Balance Institucional POLI 2025</div><div style="color:#1FB2DE;font-size:0.67em;margin-top:1px">Video oficial — YouTube</div></div></div><div style="height:170px;background:linear-gradient(135deg,#0F385A,#1FB2DE);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="width:60px;height:60px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8em;border:3px solid rgba(255,255,255,0.4)">▶</div><div style="color:white;font-size:0.77em;opacity:0.85;letter-spacing:0.8px">Clic para ver en YouTube</div></div><div style="padding:12px 16px;background:white"><div style="font-weight:800;color:#0F385A;font-size:0.83em">Balance Institucional POLI 2025</div><div style="font-size:0.68em;color:#888;margin-top:2px">YouTube · Politécnico Grancolombiano</div></div></div>';
-  h+='<div onclick="window.open(\'https://view.genially.com/67c8bfecb1c4036b16099fe1\',\'_blank\')" style="flex:1;max-width:390px;background:white;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(15,56,90,0.14);transition:transform 0.2s;border:2px solid #eef2f7" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'"><div style="background:#1FB2DE;padding:14px 18px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">📑</span><div><div style="color:#0F385A;font-weight:900;font-size:0.88em;text-transform:uppercase">Informe de Cierre PDI 2024</div><div style="color:#0F385A;font-size:0.67em;margin-top:1px;opacity:0.8">Planeación y Gestión Institucional</div></div></div><div style="height:170px;background:linear-gradient(135deg,#1FB2DE,#15BECE);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="width:60px;height:60px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.8em">📊</div><div style="color:white;font-size:0.77em;opacity:0.9;letter-spacing:0.8px">Clic para abrir en Genially</div></div><div style="padding:12px 16px;background:white"><div style="font-weight:800;color:#0F385A;font-size:0.83em">Informe de Cierre PDI 2024</div><div style="font-size:0.68em;color:#888;margin-top:2px">Genially · Planeación y Gestión Institucional</div></div></div>';
-  h+='</div></div></div>';
+  h += '<div class="slide" id="slide-balance" data-title="Balance Institucional 2025"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
+  h += '<div style="background:var(--navy);padding:13px 22px;flex-shrink:0;display:flex;align-items:center;gap:12px"><img src="./public/img/brand/logo-poli.jpg" style="height:28px"><span style="color:white;font-weight:900;font-size:clamp(12px,1.7vw,24px);text-transform:uppercase;letter-spacing:2px">Cierre Año 2025</span></div>';
+  h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:28px;padding:22px 40px;background:#f8fafe">';
+  h += '<div onclick="window.open(\'https://www.youtube.com/watch?v=2dFsBLSEp7c&t=294s\',\'_blank\')" style="flex:1;max-width:390px;background:white;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(15,56,90,0.14);transition:transform 0.2s;border:2px solid #eef2f7" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'"><div style="background:var(--navy);padding:14px 18px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">▶️</span><div><div style="color:white;font-weight:900;font-size:0.88em;text-transform:uppercase">Balance Institucional POLI 2025</div><div style="color:var(--cyan);font-size:0.67em;margin-top:1px">Video oficial — YouTube</div></div></div><div style="height:170px;background:linear-gradient(135deg,#0F385A,#1FB2DE);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="width:60px;height:60px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8em;border:3px solid rgba(255,255,255,0.4)">▶</div><div style="color:white;font-size:0.77em;opacity:0.85;letter-spacing:0.8px">Clic para ver en YouTube</div></div><div style="padding:12px 16px"><div style="font-weight:800;color:var(--navy);font-size:0.83em">Balance Institucional POLI 2025</div><div style="font-size:0.68em;color:#888;margin-top:2px">YouTube · Politécnico Grancolombiano</div></div></div>';
+  h += '<div onclick="window.open(\'https://view.genially.com/67c8bfecb1c4036b16099fe1\',\'_blank\')" style="flex:1;max-width:390px;background:white;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(15,56,90,0.14);transition:transform 0.2s;border:2px solid #eef2f7" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'"><div style="background:var(--cyan);padding:14px 18px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">📑</span><div><div style="color:var(--navy);font-weight:900;font-size:0.88em;text-transform:uppercase">Informe de Cierre PDI 2024</div><div style="color:var(--navy);font-size:0.67em;margin-top:1px;opacity:0.8">Planeación y Gestión Institucional</div></div></div><div style="height:170px;background:linear-gradient(135deg,#1FB2DE,#15BECE);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="width:60px;height:60px;background:rgba(255,255,255,0.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.8em">📊</div><div style="color:white;font-size:0.77em;opacity:0.9;letter-spacing:0.8px">Clic para abrir en Genially</div></div><div style="padding:12px 16px"><div style="font-weight:800;color:var(--navy);font-size:0.83em">Informe de Cierre PDI 2024</div><div style="font-size:0.68em;color:#888;margin-top:2px">Genially · Planeación y Gestión Institucional</div></div></div>';
+  h += '</div></div></div>';
 
-  /* ===== ORGULLOSAMENTE POLI ===== */
-  h+='<div class="slide" id="slide-orgullosamente" data-title="Orgullosamente Poli"><div class="sf" style="background:linear-gradient(135deg,#0F385A,#EC0677);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:40px;position:relative">';
-  h+='<img src="./public/img/brand/logo-poli.jpg" style="width:clamp(80px,12vw,160px);height:auto;margin-bottom:8px;filter:brightness(10);opacity:1;position:relative;">';
-  h+='<div style="font-size:clamp(24px,3.6vw,48px);font-weight:900;color:white;letter-spacing:2px;line-height:1.05;position:relative">SOMOS DIFERENTES,<br><span style="color:#FBAF17">#SOMOS POLI.</span></div>';
-  h+='<div style="color:rgba(255,255,255,0.75);font-size:clamp(11px,1.1vw,15px);line-height:1.7;max-width:500px;position:relative">Una institución universitaria que transforma vidas, genera impacto positivo y lidera la educación superior con excelencia, pasión y originalidad.</div>';
-  h+='</div></div>';
+  /* ===== ORGULLOSAMENTE ===== */
+  h += '<div class="slide" id="slide-orgullosamente" data-title="Orgullosamente Poli"><div class="sf" style="background:linear-gradient(135deg,#0F385A,#EC0677);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:40px;position:relative">';
+  h += '<img src="./public/img/brand/logo-poli.jpg" style="width:clamp(80px,12vw,160px);height:auto;margin-bottom:8px;filter:brightness(10);position:relative;">';
+  h += '<div style="font-size:clamp(24px,3.6vw,48px);font-weight:900;color:white;letter-spacing:2px;line-height:1.05;position:relative">SOMOS DIFERENTES,<br><span style="color:var(--yellow)">#SOMOS POLI.</span></div>';
+  h += '<div style="color:rgba(255,255,255,0.75);font-size:clamp(11px,1.1vw,15px);line-height:1.7;max-width:500px;position:relative">Una institución universitaria que transforma vidas, genera impacto positivo y lidera la educación superior con excelencia, pasión y originalidad.</div>';
+  h += '</div></div>';
 
-  /* ===== MOUNT ===== */
-  document.getElementById('main').insertAdjacentHTML('beforeend',h);
+  /* ── mount ── */
+  document.getElementById('main').insertAdjacentHTML('beforeend', h);
+  /* Modales en body para que no los oculte el display:none del slide padre */
+  document.body.insertAdjacentHTML('beforeend', mh);
 
-  /* ===== NAVIGATION ===== */
-  var slideHistory=[];
-  var currentSlide='slide-home';
+  /* ── navegación ── */
+  var slideHistory = [];
+  var currentSlide = 'slide-home';
 
-  window.goTo=function(id){
-    var el=document.getElementById('slide-'+id);
-    if(!el)return;
+  function animarBarras(el) {
+    el.querySelectorAll('.bar-fill').forEach(function (bar) {
+      var pct = bar.getAttribute('data-pct') || 0;
+      setTimeout(function () { bar.style.width = pct + '%'; }, 60);
+    });
+  }
+  function animarTimeline(el) {
+    el.querySelectorAll('.tl-fill').forEach(function (bar) {
+      var pct = bar.getAttribute('data-pct') || 0;
+      setTimeout(function () { bar.style.width = pct + '%'; }, 60);
+    });
+  }
+
+  window.goTo = function (id) {
+    var el = document.getElementById('slide-' + id);
+    if (!el) return;
     slideHistory.push(currentSlide);
-    document.querySelectorAll('.slide.active').forEach(function(s){s.classList.remove('active');});
+    document.querySelectorAll('.slide.active').forEach(function (s) { s.classList.remove('active'); });
     el.classList.add('active');
-    currentSlide='slide-'+id;
+    currentSlide = 'slide-' + id;
     updateNav();
+    animarBarras(el);
+    if (id === 'proyectos') animarTimeline(el);
   };
-  window.goHome=function(){
-    slideHistory=[];
-    document.querySelectorAll('.slide.active').forEach(function(s){s.classList.remove('active');});
+  window.goHome = function () {
+    slideHistory = [];
+    document.querySelectorAll('.slide.active').forEach(function (s) { s.classList.remove('active'); });
     document.getElementById('slide-home').classList.add('active');
-    currentSlide='slide-home';
+    currentSlide = 'slide-home';
     updateNav();
   };
-  window.goBack=function(){
-    if(slideHistory.length===0){goHome();return;}
-    var prev=slideHistory.pop();
-    document.querySelectorAll('.slide.active').forEach(function(s){s.classList.remove('active');});
+  window.goBack = function () {
+    if (!slideHistory.length) { goHome(); return; }
+    var prev = slideHistory.pop();
+    document.querySelectorAll('.slide.active').forEach(function (s) { s.classList.remove('active'); });
     document.getElementById(prev).classList.add('active');
-    currentSlide=prev;
+    currentSlide = prev;
     updateNav();
+    animarBarras(document.getElementById(prev));
   };
-  function updateNav(){
-    document.getElementById('btn-home').disabled=(currentSlide==='slide-home');
-    document.getElementById('btn-back').disabled=(slideHistory.length===0);
+  function updateNav() {
+    document.getElementById('btn-home').disabled = (currentSlide === 'slide-home');
+    document.getElementById('btn-back').disabled = (slideHistory.length === 0);
   }
-  window.togglePestel=function(btn){
-    var clicked=btn.nextElementSibling;
-    document.querySelectorAll('#slide-pestel .pestel-body').forEach(function(el){
-      if(el!==clicked)el.style.display='none';
+
+  window.togglePestel = function (btn) {
+    var clicked = btn.nextElementSibling;
+    document.querySelectorAll('#slide-pestel .pestel-body').forEach(function (el) {
+      if (el !== clicked) el.style.display = 'none';
     });
-    clicked.style.display=clicked.style.display==='none'?'block':'none';
+    clicked.style.display = clicked.style.display === 'none' ? 'block' : 'none';
   };
-  window.toggleLogros=function(id){
-    var el=document.getElementById(id);
-    if(!el)return;
-    var btn=el.previousElementSibling;
-    el.style.display=el.style.display==='none'?'block':'none';
-    if(btn)btn.querySelector('span:last-child').textContent=el.style.display==='none'?'▼':'▲';
+  window.toggleLogros = function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var btn = el.previousElementSibling;
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    if (btn) btn.querySelector('span:last-child').textContent = el.style.display === 'none' ? '▼' : '▲';
   };
-  document.addEventListener('keydown',function(e){
-    if(e.key==='Escape')goBack();
-    if(e.key==='h'||e.key==='H')goHome();
+
+  window.setProyView = function (view) {
+    var grid = document.getElementById('proy-grid-view');
+    var tl   = document.getElementById('proy-tl-view');
+    var btnG = document.getElementById('btn-proy-grid');
+    var btnT = document.getElementById('btn-proy-tl');
+    if (view === 'grid') {
+      grid.style.display = ''; tl.style.display = 'none';
+      btnG.classList.add('active'); btnT.classList.remove('active');
+    } else {
+      grid.style.display = 'none'; tl.style.display = '';
+      btnT.classList.add('active'); btnG.classList.remove('active');
+      animarTimeline(document.getElementById('slide-proyectos'));
+    }
+  };
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') goBack();
+    if (e.key === 'h' || e.key === 'H') goHome();
   });
 
-  /* ===== SET HOME TITLES ===== */
-  if(cfg.nombre)document.getElementById('home-title').textContent=cfg.nombre;
-  if(cfg.subtitulo)document.getElementById('home-subtitle').textContent=cfg.subtitulo;
+  /* ── títulos home desde datos ── */
+  if (cfg.nombre)   document.getElementById('home-title').textContent    = cfg.nombre;
+  if (cfg.subtitulo) document.getElementById('home-subtitle').textContent = cfg.subtitulo;
 
 })();
 </script>
-
-<script>
-(function() {
-  function waitForThree(cb) {
-    if(window.THREE) cb();
-    else setTimeout(function(){ waitForThree(cb); }, 50);
-  }
-  waitForThree(function() {
-    var wrap = document.getElementById('esfera3d');
-    if(!wrap) return;
-    var W = wrap.clientWidth || 150;
-    var H = wrap.clientHeight || 150;
-
-    var scene    = new THREE.Scene();
-    var camera   = new THREE.PerspectiveCamera(42, W/H, 0.1, 100);
-    camera.position.z = 3.8;
-
-    var renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-    renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    wrap.appendChild(renderer.domElement);
-
-    scene.add(new THREE.AmbientLight(0xffffff, 2.2));
-    var dl = new THREE.DirectionalLight(0xffffff, 2.4);
-    dl.position.set(4,5,6);
-    scene.add(dl);
-    var dl2 = new THREE.DirectionalLight(0xffffff, 1.2);
-    dl2.position.set(-4,-2,4);
-    scene.add(dl2);
-
-    var grupo = new THREE.Group();
-    scene.add(grupo);
-    grupo.rotation.x = -0.18;
-
-    var geo = new THREE.SphereGeometry(1.4, 128, 64);
-    var mat = new THREE.MeshStandardMaterial({color:0xd0d0d0, roughness:0.22, metalness:0.35});
-    grupo.add(new THREE.Mesh(geo, mat));
-
-    var geoB = new THREE.SphereGeometry(1.42, 128, 64);
-    var matB = new THREE.MeshPhysicalMaterial({
-      color:0xffffff, transparent:true, opacity:0.14,
-      roughness:0.04, metalness:0, clearcoat:1, clearcoatRoughness:0.04
-    });
-    grupo.add(new THREE.Mesh(geoB, matB));
-
-    var loader = new THREE.TextureLoader();
-    var texF = loader.load('./public/img/brand/sphere-front.png');
-    texF.colorSpace = THREE.SRGBColorSpace;
-    var discF = new THREE.Mesh(
-      new THREE.CircleGeometry(0.92, 128),
-      new THREE.MeshBasicMaterial({map:texF, transparent:true, side:THREE.DoubleSide})
-    );
-    discF.position.z = 1.42;
-    grupo.add(discF);
-
-    var texB = loader.load('./public/img/brand/sphere-back.png');
-    texB.colorSpace = THREE.SRGBColorSpace;
-    var discB = new THREE.Mesh(
-      new THREE.CircleGeometry(0.80, 128),
-      new THREE.MeshBasicMaterial({map:texB, transparent:true, side:THREE.DoubleSide})
-    );
-    discB.position.z = -1.42;
-    discB.rotation.y = Math.PI;
-    grupo.add(discB);
-
-    var geoS = new THREE.CircleGeometry(1.3, 64);
-    var matS = new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:0.15});
-    var sombra = new THREE.Mesh(geoS, matS);
-    sombra.rotation.x = -Math.PI/2;
-    sombra.position.set(0, -1.75, -0.2);
-    sombra.scale.set(1.4, 0.3, 1);
-    scene.add(sombra);
-
-    (function animar() {
-      requestAnimationFrame(animar);
-      grupo.rotation.y += 0.010;
-      renderer.render(scene, camera);
-    })();
-
-    new ResizeObserver(function() {
-      var w = wrap.clientWidth, h = wrap.clientHeight;
-      camera.aspect = w/h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w,h);
-    }).observe(wrap);
-  });
-})();
-</script>
-</div>
-</body></html>
+</body>
+</html>
