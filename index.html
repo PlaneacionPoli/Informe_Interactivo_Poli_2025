@@ -243,7 +243,7 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     <!-- RIGHT: 4 buttons -->
     <div style="width:150px;flex-shrink:0;display:flex;flex-direction:column;gap:8px;height:min(calc(100vh - 108px),460px);">
       <button onclick="goTo('planes')"        class="btn-nav" style="background:var(--navy);color:white;">Planes Anuales<br>de Retos</button>
-      <button onclick="goTo('proyectos')"     class="btn-nav" style="background:#42F2F2;color:var(--navy);">Proyectos<br>Estratégicos</button>
+      <button onclick="goTo('proyectos-resumen')" class="btn-nav" style="background:#42F2F2;color:var(--navy);">Proyectos<br>Estratégicos</button>
       <button onclick="goTo('balance')"       class="btn-nav" style="background:var(--teal);color:var(--navy);">Balance<br>Institucional</button>
       <button onclick="goTo('orgullosamente')"class="btn-nav" style="background:var(--yellow);color:var(--navy);">Orgullosamente<br>Poli</button>
     </div>
@@ -1179,35 +1179,446 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
   h += '</div>'; // end wrapper
   h += '</div></div></div>';
 
-  /* ===== PROYECTOS (con TIMELINE) ===== */
-  h += '<div class="slide" id="slide-proyectos" data-title="Proyectos Estratégicos"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
-  h += '<div style="background:var(--navy);padding:12px 24px;flex-shrink:0;display:flex;align-items:center;gap:12px"><span style="font-size:1.4em">🗂️</span><span style="color:white;font-weight:900;font-size:clamp(13px,1.7vw,22px);text-transform:uppercase;letter-spacing:1px">Proyectos Estratégicos PDI 2025</span><div class="toggle-btns" style="margin-left:auto"><button id="btn-proy-grid" class="active" onclick="setProyView(\'grid\')">Vista Grid</button><button id="btn-proy-tl" onclick="setProyView(\'tl\')">Vista Timeline</button></div></div>';
+  /* ===== PROYECTOS RESUMEN ===== */
+  (function(){
+    var finProy  = proy.filter(function(p){ return parseInt(p.avance||0) === 100; }).length;
+    var ejecProy = proy.filter(function(p){ var av=parseInt(p.avance||0); return av>0&&av<100; }).length;
+    var planProy = proy.filter(function(p){ return parseInt(p.avance||0) === 0; }).length;
+    var totalProy = proy.length;
 
-  /* grid view */
-  h += '<div id="proy-grid-view" style="flex:1;overflow-y:auto;padding:14px 22px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
-  proy.forEach(function (p) {
-    var lc = colorMap[p.linea] || '#0F385A';
-    var ln = lineNameMap[p.linea] || p.linea || '';
-    var av = parseInt(p.avance) || 0;
-    h += '<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:white;border-radius:10px;border-left:4px solid '+lc+';box-shadow:0 1px 5px rgba(0,0,0,0.07);margin-bottom:4px"><span style="font-size:1.1em">📋</span><div style="flex:1"><div style="font-size:0.63em;font-weight:900;color:'+lc+';text-transform:uppercase">'+esc(ln)+'</div><div style="font-size:0.78em;font-weight:700;color:var(--navy)">'+esc(p.nombre)+'</div></div><div style="background:'+lc+';color:white;border-radius:16px;padding:2px 9px;font-size:0.72em;font-weight:900">'+av+'%</div></div>';
-  });
-  h += '</div></div>';
+    /* ── CSS Animations (restart each time slide becomes active via display:none→flex) ── */
+    h += '<style>'
+      + '#slide-proyectos-resumen.active .pbar{'
+      +   'animation:pbarGrow 0.9s cubic-bezier(0.34,1.56,0.64,1) both;'
+      + '}'
+      + '#slide-proyectos-resumen.active .pbar-val{'
+      +   'animation:pbarFade 0.45s ease both;'
+      + '}'
+      + '#slide-proyectos-resumen.active .pdonut-g{'
+      +   'transform-box:fill-box;transform-origin:center;'
+      +   'animation:pdonutIn 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.5s both;'
+      + '}'
+      + '#slide-proyectos-resumen.active .ptotal{'
+      +   'animation:pbarFade 0.5s ease 1.1s both;'
+      + '}'
+      + '@keyframes pbarGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}'
+      + '@keyframes pbarFade{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}'
+      + '@keyframes pdonutIn{from{opacity:0;transform:scale(0.15) rotate(-200deg)}to{opacity:1;transform:scale(1) rotate(0deg)}}'
+      + '</style>';
 
-  /* timeline view */
-  h += '<div id="proy-tl-view" style="display:none;flex:1;overflow-y:auto;padding:14px 22px">';
-  lineIds.forEach(function (lid) {
-    var lc = colorMap[lid], ln = lineNameMap[lid];
-    var items = proy.filter(function (p) { return p.linea === lid; });
-    if (!items.length) return;
-    h += '<div style="margin-bottom:14px"><div style="font-size:0.7em;font-weight:900;color:'+lc+';text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;padding:4px 10px;background:'+lc+'18;border-radius:6px;border-left:3px solid '+lc+'">'+esc(ln)+'</div>';
-    items.forEach(function (p) {
-      var av = parseInt(p.avance) || 0;
-      var tc = av >= 50 ? 'white' : lc;
-      h += '<div class="tl-bar-wrap"><div class="tl-label" title="'+esc(p.nombre)+'">'+esc(p.nombre)+'</div><div class="tl-track"><div class="tl-fill" data-pct="'+av+'" style="width:0%;background:'+lc+';"><span style="color:white">'+av+'%</span></div></div><div class="tl-pct" style="color:'+lc+'">'+av+'%</div></div>';
+    /* ── Bar chart: HTML cylinders (grow from base) ── */
+    var barsData = [
+      {year:'2022', val:3,       col:'#1a2e4a', cap:'#2d4e7e'},
+      {year:'2023', val:8,       col:'#8abe28', cap:'#A6CE38'},
+      {year:'2024', val:13,      col:'#18a8d5', cap:'#1FB2DE'},
+      {year:'2025', val:finProy, col:'#c40563', cap:'#EC0677'}
+    ];
+    var BH_MAX = 220; /* max bar height in px */
+    var maxV = 14;
+    var BW = 72;      /* bar width in px */
+    var GRAD = 'linear-gradient(to right,rgba(0,0,0,0.32) 0%,rgba(255,255,255,0.30) 28%,rgba(0,0,0,0.01) 55%,rgba(0,0,0,0.26) 100%)';
+
+    var barHtml = '';
+    barsData.forEach(function(b, i){
+      var bh = Math.max(Math.round((b.val / maxV) * BH_MAX), 14);
+      var dBar = (i * 0.14).toFixed(2)+'s';
+      var dVal = (0.65 + i * 0.14).toFixed(2)+'s';
+      barHtml += '<div style="display:flex;flex-direction:column;align-items:center;">';
+      /* value label */
+      barHtml += '<div class="pbar-val" style="font-weight:900;font-size:clamp(16px,1.6vw,24px);color:'+b.col+';min-height:32px;display:flex;align-items:center;animation-delay:'+dVal+'">'
+               + b.val+'</div>';
+      /* bar outer — fixed height, overflow visible for cap */
+      barHtml += '<div style="position:relative;width:'+BW+'px;height:'+bh+'px;overflow:visible;flex-shrink:0;">';
+      /* bar body + cap (scaleY animation from bottom) */
+      barHtml += '<div class="pbar" style="'
+               + 'position:absolute;inset:0;'
+               + 'background:'+GRAD+','+b.col+';'
+               + 'border-radius:3px 3px 0 0;'
+               + 'transform-origin:bottom center;'
+               + 'animation-delay:'+dBar+'">'
+               /* cap oval inside body so it animates together */
+               + '<div style="position:absolute;top:-10px;left:0;right:0;height:20px;'
+               + 'background:'+b.cap+';border-radius:50%;'
+               + 'box-shadow:0 2px 8px rgba(0,0,0,0.22)"></div>'
+               /* highlight shine on cap */
+               + '<div style="position:absolute;top:-7px;left:12px;right:12px;height:10px;'
+               + 'background:rgba(255,255,255,0.28);border-radius:50%"></div>'
+               + '</div>';
+      barHtml += '</div>'; /* end bar outer */
+      /* year label */
+      barHtml += '<div style="font-weight:800;font-size:clamp(11px,1vw,14px);color:#555;margin-top:8px">'+b.year+'</div>';
+      barHtml += '</div>';
+    });
+
+    /* ── Pie chart: datos acumulados PDI (igual a imagen referencia) ── */
+    /* finalizados acumulados = histórico + 2025 completados */
+    var finCum = 3+8+13+finProy;          /* 2022+2023+2024+2025 */
+    var totalCum = finCum + ejecProy + planProy;
+
+    /* Sectores en orden CLOCKWISE desde arriba: Planeación → Finalizados → Ejecución
+       (misma distribución visual que la imagen de referencia)
+       Solo incluir sectores con valor > 0                                          */
+    var pieSectors = [];
+    if(planProy > 0) pieSectors.push({v:planProy, c:'#FBAF17', l:'PLANEACIÓN'});
+    pieSectors.push({v:finCum,   c:'#1FB2DE', l:'FINALIZADOS'});
+    if(ejecProy > 0) pieSectors.push({v:ejecProy,  c:'#EC0677', l:'EJECUCIÓN'});
+    var pieTot = pieSectors.reduce(function(s,p){return s+p.v;},0)||1;
+
+    /* SVG: pie sólido (sin agujero), 270×270, badge a la derecha */
+    var PCX=132, PCY=135, PR=120;
+    var dsvg = '<svg viewBox="0 0 330 280" style="width:100%;height:auto;overflow:visible" xmlns="http://www.w3.org/2000/svg">';
+    dsvg += '<defs>'
+          + '<filter id="pshadow" x="-12%" y="-12%" width="124%" height="124%">'
+          + '<feDropShadow dx="2" dy="4" stdDeviation="6" flood-color="rgba(0,0,0,0.25)"/>'
+          + '</filter>'
+          + '</defs>';
+
+    /* sectores animados como grupo */
+    dsvg += '<g class="pdonut-g">';
+    var psa = -Math.PI/2; /* empezar en la cima (12 en punto) */
+    pieSectors.forEach(function(seg){
+      var sweep = (seg.v / pieTot) * 2 * Math.PI;
+      /* evitar segmento de círculo completo (bug SVG) */
+      if(sweep > 2*Math.PI - 0.0005) sweep = 2*Math.PI - 0.0005;
+      var pea = psa + sweep;
+      var laf  = sweep > Math.PI ? 1 : 0;
+      /* puntos del arco exterior */
+      var ox1 = (PCX + PR*Math.cos(psa)).toFixed(2);
+      var oy1 = (PCY + PR*Math.sin(psa)).toFixed(2);
+      var ox2 = (PCX + PR*Math.cos(pea)).toFixed(2);
+      var oy2 = (PCY + PR*Math.sin(pea)).toFixed(2);
+      /* path: desde el CENTRO al arco y de vuelta */
+      var d = 'M '+PCX+','+PCY
+            +' L '+ox1+','+oy1
+            +' A '+PR+','+PR+' 0 '+laf+',1 '+ox2+','+oy2
+            +' Z';
+      /* posición del label: 62% del radio en el ángulo medio */
+      var midA = psa + sweep/2;
+      var lr   = PR * 0.62;
+      var lx   = (PCX + lr*Math.cos(midA)).toFixed(1);
+      var ly   = (PCY + lr*Math.sin(midA)).toFixed(1);
+      dsvg += '<path d="'+d+'" fill="'+seg.c+'" stroke="white" stroke-width="4" filter="url(#pshadow)"/>';
+      dsvg += '<text x="'+lx+'" y="'+(parseFloat(ly)-12).toFixed(1)+'"'
+            + ' text-anchor="middle" dominant-baseline="middle"'
+            + ' font-family="Montserrat,sans-serif" font-weight="900"'
+            + ' font-size="9.5" fill="white" letter-spacing="0.8">'+seg.l+'</text>';
+      dsvg += '<text x="'+lx+'" y="'+(parseFloat(ly)+14).toFixed(1)+'"'
+            + ' text-anchor="middle" dominant-baseline="middle"'
+            + ' font-family="Montserrat,sans-serif" font-weight="900"'
+            + ' font-size="26" fill="white">'+seg.v+'</text>';
+      psa = pea;
+    });
+    dsvg += '</g>';
+
+    /* badge total — fuera del grupo animado, aparece después */
+    dsvg += '<g class="ptotal">'
+          + '<circle cx="'+(PCX+PR+30)+'" cy="'+(PCY-34)+'" r="32" fill="#b8c8d8"/>'
+          + '<text x="'+(PCX+PR+30)+'" y="'+(PCY-26)+'"'
+          + ' text-anchor="middle" dominant-baseline="middle"'
+          + ' font-family="Montserrat,sans-serif" font-weight="900"'
+          + ' font-size="24" fill="#344e6a">'+totalCum+'</text>'
+          + '</g>';
+
+    dsvg += '</svg>';
+
+    /* ── Build slide HTML ── */
+    h += '<div class="slide" id="slide-proyectos-resumen" data-title="Proyectos Estratégicos">';
+    h += '<div class="sf" style="background:white;display:flex;flex-direction:column;overflow:hidden;">';
+
+    /* Header */
+    h += '<div style="padding:18px 36px 4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;">';
+    h += '<img src="./public/img/brand/logo-poli.jpg" style="position:absolute;right:24px;top:50%;transform:translateY(-50%);height:48px;object-fit:contain;">';
+    h += '<div style="text-align:center;">';
+    h += '<div style="font-weight:900;font-size:clamp(20px,2.6vw,40px);color:var(--navy);text-transform:uppercase;letter-spacing:2px;">Proyectos Estratégicos</div>';
+    h += '<div style="color:var(--cyan);font-size:clamp(8px,0.72vw,10px);font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-top:3px;">PDI 2025 — Cierre de metas, planes y proyectos</div>';
+    h += '</div></div>';
+
+    /* Main content row */
+    h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:16px;padding:4px 28px 6px;min-height:0;">';
+
+    /* LEFT: bar chart */
+    h += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:0;min-width:0;">';
+    /* bars row: align to bottom so all bars share the same baseline */
+    h += '<div style="display:flex;align-items:flex-end;justify-content:center;gap:clamp(16px,2.4vw,32px);padding-bottom:0;">';
+    h += barHtml;
+    h += '</div>';
+    /* brown platform/base */
+    h += '<div style="height:12px;background:linear-gradient(to bottom,#c8a456,#9a6f2e);border-radius:8px;width:90%;max-width:380px;box-shadow:0 4px 14px rgba(0,0,0,0.22);margin-top:0;"></div>';
+    h += '<div style="font-weight:900;font-size:clamp(10px,0.92vw,14px);color:var(--navy);text-align:center;margin-top:10px;letter-spacing:0.5px;">Proyectos Finalizados</div>';
+    h += '</div>';
+
+    /* RIGHT: pie chart (labels dentro, igual a imagen 1) */
+    h += '<div style="flex:1.2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;">';
+    h += dsvg;
+    h += '</div>'; /* end right col */
+
+    h += '</div>'; /* end main row */
+
+    /* CTA button */
+    h += '<div style="padding:6px 24px 16px;text-align:center;flex-shrink:0;">';
+    h += '<button onclick="goTo(\'proyectos\')" style="background:var(--navy);color:white;border:none;border-radius:12px;padding:11px 44px;font-family:inherit;font-weight:900;font-size:clamp(11px,0.95vw,14px);cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;box-shadow:0 4px 16px rgba(15,56,90,0.25);transition:all 0.2s" onmouseenter="this.style.background=\'#1FB2DE\';this.style.color=\'#0F385A\'" onmouseleave="this.style.background=\'var(--navy)\';this.style.color=\'white\'">Ver todos los proyectos →</button>';
+    h += '</div>';
+
+    h += '</div></div>';
+  })();
+
+  /* ===== PROYECTOS (PMO 2022-2025, TABS por línea) ===== */
+  (function(){
+    /* ── Helpers ── */
+    function getComienzYear(p) {
+      var c = (p['Comienzo']||'').split('/');
+      return c.length===3 ? parseInt(c[2]) : 0;
+    }
+    function fmtDate(d) {
+      if (!d) return '—';
+      var pts = d.split('/');
+      if (pts.length!==3) return d;
+      var ms=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      return pts[0]+' '+ms[(parseInt(pts[1])-1)||0]+' '+pts[2];
+    }
+    function getPct(p) { return parseInt(p['% completado']||'0')||0; }
+    var GANTT_START = 2022, GANTT_END = 2027, GANTT_MONTHS = (2027-2022)*12;
+    function toGanttPct(dateStr) {
+      var pts = (dateStr||'').split('/');
+      if (pts.length!==3) return null;
+      var m = (parseInt(pts[2])-GANTT_START)*12 + (parseInt(pts[1])-1) + parseInt(pts[0])/31;
+      return Math.min(100, Math.max(0, m/GANTT_MONTHS*100));
+    }
+    function getEstado(p) {
+      var s = (p['0. Estado del proyecto']||'').toLowerCase();
+      if (s.indexOf('finalizado')>=0) return {col:'#A6CE38', tc:'var(--navy)', lbl:'Finalizado'};
+      if (s.indexOf('cierre')>=0)     return {col:'#15BECE', tc:'var(--navy)', lbl:'Cierre'};
+      if (s.indexOf('ejecuci')>=0)    return {col:'#1FB2DE', tc:'var(--navy)', lbl:'Ejecución'};
+      if (s.indexOf('planeaci')>=0)   return {col:'#FBAF17', tc:'var(--navy)', lbl:'Planeación'};
+      if (s.indexOf('stand')>=0)      return {col:'#aaa',    tc:'white',       lbl:'Stand by'};
+      return {col:'#ccc', tc:'#555', lbl: p['0. Estado del proyecto']||''};
+    }
+    var pmoLineMap = {
+      'Calidad':'calidad',
+      'Educación para la Vida':'educacion','Educación para la vida':'educacion','Educacion para la vida':'educacion',
+      'Expansión':'expansion','Experiencia':'experiencia',
+      'Transformación Organizacional':'transformacion','Sostenibilidad':'sostenibilidad'
+    };
+    var allPMO  = D.proyectos_pmo || [];
+    var filtPMO = allPMO.filter(function(p){ var y=getComienzYear(p); return y>=2022&&y<=2025; });
+    var byLine  = {};
+    filtPMO.forEach(function(p){
+      var lid = pmoLineMap[p['4. Líneas estratégicas']||''] || 'otros';
+      if (!byLine[lid]) byLine[lid] = [];
+      byLine[lid].push(p);
+    });
+    var allTabMeta = [
+      {id:'calidad',        label:'Calidad',        icon:'🎯', tc:'white'},
+      {id:'educacion',      label:'Educación',      icon:'📚', tc:'white'},
+      {id:'expansion',      label:'Expansión',      icon:'🌍', tc:'var(--navy)'},
+      {id:'experiencia',    label:'Experiencia',    icon:'✨', tc:'var(--navy)'},
+      {id:'transformacion', label:'Transf. Org.',   icon:'⚙️', tc:'var(--navy)'},
+      {id:'sostenibilidad', label:'Sostenibilidad', icon:'🌱', tc:'var(--navy)'}
+    ];
+    var activeTabs = allTabMeta.filter(function(t){ return byLine[t.id]&&byLine[t.id].length>0; });
+    if (!activeTabs.length) activeTabs = allTabMeta;
+
+    /* ── Slide wrapper ── */
+    h += '<div class="slide" id="slide-proyectos" data-title="Proyectos Estratégicos"><div class="sf" style="background:#f0f4f8;display:flex;flex-direction:column;">';
+
+    /* ── Header ── */
+    h += '<div style="background:var(--navy);padding:10px 20px;flex-shrink:0;display:flex;align-items:center;gap:12px;">';
+    h += '<span style="font-size:1.25em">🗂️</span>';
+    h += '<div style="flex:1;min-width:0;">';
+    h += '<div style="color:white;font-weight:900;font-size:clamp(11px,1.35vw,18px);text-transform:uppercase;letter-spacing:0.8px;">Proyectos Estratégicos PDI · Centro de Proyectos PMO</div>';
+    h += '<div style="color:rgba(255,255,255,0.6);font-size:clamp(8px,0.65vw,10px);font-weight:700;margin-top:1px;">'+filtPMO.length+' proyectos con inicio 2022–2025</div>';
+    h += '</div>';
+    h += '<div class="toggle-btns">';
+    h += '<button id="btn-proy-grid" class="active" onclick="setProyView(\'grid\')">Vista Cards</button>';
+    h += '<button id="btn-proy-tl" onclick="setProyView(\'tl\')">Vista Barras</button>';
+    h += '</div></div>';
+
+    /* ── Tabs de líneas ── */
+    h += '<div class="proy-tabs-row" style="display:flex;flex-shrink:0;border-bottom:3px solid #dce4ef;background:white;overflow-x:auto;">';
+    activeTabs.forEach(function(t, idx){
+      var lc  = colorMap[t.id] || '#0F385A';
+      var cnt = (byLine[t.id]||[]).length;
+      var isFirst = (idx===0);
+      h += '<button id="proy-tb-'+t.id+'" class="proy-tab-btn'+(isFirst?' active':'')+'"'
+         + ' onclick="setProjTab(\''+t.id+'\')"'
+         + ' data-lc="'+lc+'"'
+         + ' style="flex:1;min-width:90px;border:none;padding:8px 5px 6px;cursor:pointer;font-family:inherit;'
+         + 'font-weight:800;font-size:clamp(8px,0.7vw,10px);text-transform:uppercase;letter-spacing:0.3px;'
+         + 'display:flex;flex-direction:column;align-items:center;gap:2px;'
+         + 'background:'+(isFirst?lc:'white')+';color:'+(isFirst?t.tc:lc)+';'
+         + 'border-bottom:3px solid '+(isFirst?lc:'transparent')+';'
+         + 'transition:all 0.18s;position:relative;bottom:-3px;white-space:nowrap;">'
+         + '<span style="font-size:1.25em">'+t.icon+'</span>'
+         + t.label
+         + '<span style="font-size:0.88em;font-weight:900;opacity:0.9">('+cnt+')</span>'
+         + '</button>';
     });
     h += '</div>';
-  });
-  h += '</div></div></div>';
+
+    /* ── Grid view: un panel por línea ── */
+    h += '<div id="proy-grid-view" style="flex:1;overflow-y:auto;padding:12px 16px;">';
+    activeTabs.forEach(function(t, idx){
+      var lc    = colorMap[t.id] || '#0F385A';
+      var ln    = lineNameMap[t.id] || t.label;
+      var items = byLine[t.id] || [];
+      var avgPct = items.length ? Math.round(items.reduce(function(s,p){return s+getPct(p);},0)/items.length) : 0;
+      var nFin    = items.filter(function(p){return (p['0. Estado del proyecto']||'').toLowerCase().indexOf('finalizado')>=0;}).length;
+      var nCierre = items.filter(function(p){return (p['0. Estado del proyecto']||'').toLowerCase().indexOf('cierre')>=0;}).length;
+      var nEjec   = items.filter(function(p){return (p['0. Estado del proyecto']||'').toLowerCase().indexOf('ejecuci')>=0;}).length;
+      var nPlan   = items.filter(function(p){return (p['0. Estado del proyecto']||'').toLowerCase().indexOf('planeaci')>=0;}).length;
+      var nStand  = items.length-nFin-nCierre-nEjec-nPlan;
+
+      h += '<div id="proy-tab-'+t.id+'" class="proy-tab-panel" style="display:'+(idx===0?'block':'none')+'">';
+
+      /* sub-header línea */
+      h += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:10px 14px;'
+         + 'background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.07);border-left:5px solid '+lc+';">';
+      h += '<span style="font-size:1.7em">'+t.icon+'</span>';
+      h += '<div style="flex:1;min-width:0;">';
+      h += '<div style="font-weight:900;font-size:clamp(11px,1vw,15px);color:'+lc+';text-transform:uppercase;letter-spacing:0.7px;">'+esc(ln)+'</div>';
+      h += '<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">';
+      if (nFin)    h += '<span style="font-size:0.65em;font-weight:800;background:#A6CE3825;color:#5a8015;padding:2px 8px;border-radius:10px;border:1px solid #A6CE3860;">✓ Finalizado: '+nFin+'</span>';
+      if (nCierre) h += '<span style="font-size:0.65em;font-weight:800;background:#15BECE25;color:#0e8090;padding:2px 8px;border-radius:10px;border:1px solid #15BECE60;">◎ Cierre: '+nCierre+'</span>';
+      if (nEjec)   h += '<span style="font-size:0.65em;font-weight:800;background:#1FB2DE25;color:#1080a0;padding:2px 8px;border-radius:10px;border:1px solid #1FB2DE60;">▶ Ejecución: '+nEjec+'</span>';
+      if (nPlan)   h += '<span style="font-size:0.65em;font-weight:800;background:#FBAF1725;color:#906010;padding:2px 8px;border-radius:10px;border:1px solid #FBAF1760;">◌ Planeación: '+nPlan+'</span>';
+      if (nStand>0)h += '<span style="font-size:0.65em;font-weight:800;background:#aaa2;color:#666;padding:2px 8px;border-radius:10px;border:1px solid #aaa5;">⏸ Stand by: '+nStand+'</span>';
+      h += '</div></div>';
+      h += '<div style="text-align:center;flex-shrink:0;">';
+      h += '<div style="font-size:clamp(15px,1.4vw,20px);font-weight:900;color:'+lc+';">'+avgPct+'%</div>';
+      h += '<div style="font-size:0.6em;color:#999;font-weight:700;">promedio</div>';
+      h += '<div style="background:#eef2f7;border-radius:5px;height:5px;margin-top:3px;width:60px;overflow:hidden;">';
+      h += '<div style="height:100%;width:'+avgPct+'%;background:'+lc+';border-radius:5px;"></div>';
+      h += '</div></div></div>';
+
+      /* tarjetas */
+      h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+      items.forEach(function(p){
+        var pct    = getPct(p);
+        var est    = getEstado(p);
+        var inicio = fmtDate(p['Comienzo']);
+        var fin    = fmtDate(p['Fin']);
+        var area   = p['3. Area'] || p['2. Vicerrectoría'] || '';
+        var bc = pct===100?'#A6CE38':(pct>=90?lc:(pct>=70?'#FBAF17':'#EC0677'));
+        var tcB = (bc==='#FBAF17'||bc==='#A6CE38')?'var(--navy)':'white';
+
+        h += '<div style="background:white;border-radius:10px;border-left:5px solid '+lc+';'
+           + 'box-shadow:0 2px 8px rgba(0,0,0,0.07);overflow:hidden;cursor:default;'
+           + 'transition:transform 0.15s,box-shadow 0.15s;"'
+           + ' onmouseenter="this.style.transform=\'translateY(-2px)\';this.style.boxShadow=\'0 6px 18px rgba(0,0,0,0.13)\'"'
+           + ' onmouseleave="this.style.transform=\'\';this.style.boxShadow=\'0 2px 8px rgba(0,0,0,0.07)\'">';
+        /* nombre + % */
+        h += '<div style="padding:9px 11px 5px;display:flex;align-items:flex-start;gap:8px;">';
+        h += '<div style="flex:1;min-width:0;">';
+        h += '<div style="font-size:clamp(9px,0.82vw,12px);font-weight:800;color:var(--navy);line-height:1.3;">'+esc(p['Nombre del proyecto']||'')+'</div>';
+        h += '<div style="font-size:clamp(7px,0.6vw,9px);color:#aaa;font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+esc(area)+'">'+esc(area)+'</div>';
+        h += '</div>';
+        h += '<div style="background:'+bc+';color:'+tcB+';border-radius:14px;padding:2px 8px;'
+           + 'font-size:clamp(9px,0.72vw,11px);font-weight:900;flex-shrink:0;white-space:nowrap;margin-top:1px;">'+pct+'%</div>';
+        h += '</div>';
+        /* estado + fechas */
+        h += '<div style="padding:0 11px 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">';
+        h += '<span style="background:'+est.col+'22;color:'+est.col+';border:1px solid '+est.col+'55;'
+           + 'border-radius:7px;padding:2px 7px;font-size:clamp(7px,0.6vw,9px);font-weight:900;white-space:nowrap;">'
+           + est.lbl+'</span>';
+        h += '<span style="font-size:clamp(7px,0.57vw,9px);color:#bbb;font-weight:700;white-space:nowrap;margin-left:auto;">📅 '+inicio+' → '+fin+'</span>';
+        h += '</div>';
+        /* barra de progreso al pie */
+        h += '<div style="height:3px;background:#f0f4f8;"><div style="height:100%;width:'+pct+'%;background:'+lc+';"></div></div>';
+        h += '</div>'; /* end tarjeta */
+      });
+      h += '</div>'; /* end grid tarjetas */
+      h += '</div>'; /* end panel */
+    });
+    h += '</div>'; /* end grid view */
+
+    /* ── Vista Gantt (barras por fechas reales + años en cabecera) ── */
+    var ganttYears  = [2022,2023,2024,2025,2026];
+    var nameW       = '170px';
+
+    h += '<div id="proy-tl-view" style="display:none;flex-direction:column;flex:1;overflow:hidden;">';
+
+    /* cabecera sticky con años */
+    h += '<div style="flex-shrink:0;background:#f0f4f8;border-bottom:2px solid #cdd5e0;'
+       + 'padding:0 16px;display:flex;align-items:stretch;">';
+    h += '<div style="width:'+nameW+';flex-shrink:0;"></div>';
+    h += '<div style="flex:1;display:flex;">';
+    ganttYears.forEach(function(yr){
+      h += '<div style="flex:1;font-size:clamp(9px,0.75vw,11px);font-weight:900;color:#5a6a80;'
+         + 'text-align:center;padding:5px 0 4px;border-left:2px solid #cdd5e0;">'+yr+'</div>';
+    });
+    h += '</div></div>';
+
+    /* área scrollable con proyectos */
+    h += '<div style="flex:1;overflow-y:auto;padding:8px 16px 16px;">';
+    activeTabs.forEach(function(t){
+      var lc    = colorMap[t.id] || '#0F385A';
+      var ln    = lineNameMap[t.id] || t.label;
+      var items = byLine[t.id] || [];
+      if (!items.length) return;
+
+      /* encabezado de línea */
+      h += '<div style="display:flex;align-items:center;margin-top:10px;margin-bottom:3px;">';
+      h += '<div style="width:'+nameW+';flex-shrink:0;">';
+      h += '<div style="font-weight:900;color:'+lc+';text-transform:uppercase;font-size:clamp(8px,0.7vw,10px);'
+         + 'letter-spacing:0.5px;padding:3px 8px;background:'+lc+'18;border-radius:5px;border-left:3px solid '+lc+';">'
+         + t.icon+' '+esc(ln)+'</div>';
+      h += '</div>';
+      /* líneas de año para header */
+      h += '<div style="flex:1;display:flex;height:22px;">';
+      ganttYears.forEach(function(){
+        h += '<div style="flex:1;border-left:1px dashed #cdd5e0;"></div>';
+      });
+      h += '<div style="width:0;border-left:1px dashed #cdd5e0;"></div>';
+      h += '</div></div>';
+
+      /* filas de proyectos */
+      items.forEach(function(p){
+        var pct    = getPct(p);
+        var lPct   = toGanttPct(p['Comienzo']);
+        var rPct   = toGanttPct(p['Fin']);
+        if (lPct===null) lPct=0;
+        if (rPct===null) rPct=100;
+        var wPct   = Math.max(0.8, rPct-lPct);
+        var nombre = p['Nombre del proyecto']||'';
+
+        h += '<div style="display:flex;align-items:center;margin-bottom:4px;min-height:22px;">';
+
+        /* nombre */
+        h += '<div style="width:'+nameW+';flex-shrink:0;padding-right:8px;">';
+        h += '<div style="font-size:clamp(8px,0.65vw,9.5px);font-weight:700;color:var(--navy);'
+           + 'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="'+esc(nombre)+'">'
+           + esc(nombre)+'</div>';
+        h += '</div>';
+
+        /* pista con líneas de año + barra */
+        h += '<div style="flex:1;position:relative;height:18px;">';
+        /* rejilla de años */
+        ganttYears.forEach(function(yr,i){
+          h += '<div style="position:absolute;top:0;bottom:0;left:'+(i*20)+'%;'
+             + 'border-left:1px dashed #cdd5e0;"></div>';
+        });
+        h += '<div style="position:absolute;top:0;bottom:0;right:0;border-left:1px dashed #cdd5e0;"></div>';
+
+        /* barra del proyecto */
+        h += '<div style="position:absolute;top:1px;bottom:1px;left:'+lPct.toFixed(2)+'%;width:'+wPct.toFixed(2)+'%;'
+           + 'background:'+lc+';border-radius:4px;display:flex;align-items:center;'
+           + 'overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.18);">';
+        /* relleno de avance */
+        h += '<div style="position:absolute;top:0;left:0;bottom:0;width:'+pct+'%;background:rgba(255,255,255,0.25);"></div>';
+        /* texto */
+        h += '<span style="position:relative;z-index:1;color:white;font-weight:900;font-size:clamp(7px,0.6vw,9px);'
+           + 'padding:0 5px;white-space:nowrap;">'+pct+'%</span>';
+        h += '</div>'; /* end barra */
+
+        h += '</div>'; /* end pista */
+        h += '</div>'; /* end fila */
+      });
+    });
+    h += '</div>'; /* end scroll area */
+    h += '</div>'; /* end proy-tl-view */
+
+    h += '</div></div>';
+  })();
 
   /* ===== BALANCE ===== */
   h += '<div class="slide" id="slide-balance" data-title="Balance Institucional 2025"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
@@ -1321,18 +1732,51 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     if (counter) counter.textContent = (prev + 1) + ' de ' + imgs.length;
   };
 
+  /* ── Pestañas por línea estratégica ── */
+  window.setProjTab = function (lineId) {
+    var slide = document.getElementById('slide-proyectos');
+    if (!slide) return;
+    /* ocultar todos los paneles */
+    slide.querySelectorAll('.proy-tab-panel').forEach(function(p){ p.style.display='none'; });
+    /* desactivar todos los botones */
+    slide.querySelectorAll('.proy-tab-btn').forEach(function(b){
+      b.classList.remove('active');
+      var lc = b.getAttribute('data-lc') || '#0F385A';
+      b.style.background = 'white';
+      b.style.color = lc;
+      b.style.borderBottomColor = 'transparent';
+    });
+    /* activar panel */
+    var panel = document.getElementById('proy-tab-'+lineId);
+    if (panel) panel.style.display = 'block';
+    /* activar botón */
+    var btn = document.getElementById('proy-tb-'+lineId);
+    if (btn) {
+      btn.classList.add('active');
+      var lc = btn.getAttribute('data-lc') || '#0F385A';
+      btn.style.background = lc;
+      /* contraste texto */
+      var lightColors = ['#FBAF17','#1FB2DE','#15BECE','#A6CE38'];
+      btn.style.color = lightColors.indexOf(lc) >= 0 ? 'var(--navy)' : 'white';
+      btn.style.borderBottomColor = lc;
+    }
+  };
+
   window.setProyView = function (view) {
     var grid = document.getElementById('proy-grid-view');
     var tl   = document.getElementById('proy-tl-view');
     var btnG = document.getElementById('btn-proy-grid');
     var btnT = document.getElementById('btn-proy-tl');
+    /* las pestañas de línea sólo tienen sentido en vista grid */
+    var tabs = document.querySelector('#slide-proyectos .proy-tabs-row');
     if (view === 'grid') {
       grid.style.display = ''; tl.style.display = 'none';
       btnG.classList.add('active'); btnT.classList.remove('active');
+      if (tabs) tabs.style.display = 'flex';
     } else {
-      grid.style.display = 'none'; tl.style.display = '';
+      grid.style.display = 'none'; tl.style.display = 'flex';
       btnT.classList.add('active'); btnG.classList.remove('active');
-      animarTimeline(document.getElementById('slide-proyectos'));
+      if (tabs) tabs.style.display = 'none';
     }
   };
 
