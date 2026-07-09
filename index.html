@@ -597,7 +597,7 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
   }
 
   /* Gantt timeline con escala de años */
-  function ganttTimeline(nombre, fechaIni, fechaFin, yearColor) {
+  function ganttTimeline(nombre, fechaIni, fechaFin, yearColor, pctCompletado) {
     var dateStart = parseDate(fechaIni);
     var dateEnd = parseDate(fechaFin);
 
@@ -612,12 +612,13 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
 
     var leftPct = (startOffset / totalDays) * 100;
     var widthPct = (duration / totalDays) * 100;
+    var pct = parseInt(pctCompletado) || 0;
 
     return '<div style="margin-bottom:8px">'
       + '<div style="font-size:0.65em;color:#333;margin-bottom:2px">'+esc(nombre)+'</div>'
       + '<div style="background:#f0f0f0;border-radius:4px;height:24px;position:relative;border:1px solid #ddd;overflow:hidden">'
       + '<div style="position:absolute;left:'+leftPct+'%;width:'+widthPct+'%;height:100%;background:'+yearColor+';border-radius:3px;display:flex;align-items:center;justify-content:center">'
-      + '<span style="font-size:0.5em;color:white;font-weight:700;white-space:nowrap;padding:0 2px">'+Math.round(widthPct)+'%</span>'
+      + '<span style="font-size:0.5em;color:white;font-weight:700;white-space:nowrap;padding:0 2px">'+pct+'%</span>'
       + '</div>'
       + '</div>'
       + '</div>';
@@ -767,7 +768,7 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
         var finParts = String(p.Fin||'').split('/');
         var year = finParts[2] || '2025';
         var yearColor = yearColors[year] || '#999';
-        h += ganttTimeline(p['Nombre del proyecto'], p.Comienzo||'', p.Fin||'', yearColor);
+        h += ganttTimeline(p['Nombre del proyecto'], p.Comienzo||'', p.Fin||'', yearColor, p['% completado']||'');
       });
     } else {
       h += '<div style="color:#aaa;font-size:0.65em;padding:8px">Sin proyectos disponibles</div>';
