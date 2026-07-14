@@ -671,6 +671,16 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
       + '</tr>';
   }
 
+  /* Función auxiliar: badge de avance (icono + valor) para el panel Retos */
+  function retoBadge(color, icon, valor, label) {
+    return '<div style="flex:1;display:flex;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.08)">'
+      + '<div style="width:34px;flex-shrink:0;background:'+color+'20;display:flex;align-items:center;justify-content:center"><i class="fas '+icon+'" style="color:'+color+';font-size:1em"></i></div>'
+      + '<div style="flex:1;background:#0F385A;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px">'
+      + '<div style="font-size:0.95em;font-weight:900;color:'+color+'">'+valor+'%</div>'
+      + '<div style="font-size:0.5em;color:'+color+';font-weight:700;text-transform:uppercase;letter-spacing:0.3px;text-align:center;line-height:1.2">'+label+'</div>'
+      + '</div></div>';
+  }
+
   /* Mapeo lineId -> nombres en Excel */
   var lineaMap = {
     'calidad': { pmo: 'Calidad', cmi: 'Calidad' },
@@ -724,14 +734,14 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     /* RETOS */
     h += '<div style="padding:14px 18px;background:#f7faff;border-right:2px solid #eef2f7">';
     h += '<div style="font-weight:900;font-size:0.75em;color:#0F385A;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Retos</div>';
-    h += '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">';
-    h += '<div style="background:'+lineColor+'20;border-left:4px solid '+lineColor+';border-radius:4px;padding:8px;text-align:center"><div style="font-size:0.9em;font-weight:900;color:'+lineColor+'">'+real+'%</div><div style="font-size:0.6em;color:#666;font-weight:700;text-transform:uppercase">Avance Real</div></div>';
-    h += '<div style="background:#FBAF1720;border-left:4px solid #FBAF17;border-radius:4px;padding:8px;text-align:center"><div style="font-size:0.9em;font-weight:900;color:#FBAF17">'+esperado+'%</div><div style="font-size:0.6em;color:#666;font-weight:700;text-transform:uppercase">Esperado</div></div>';
-    h += '<div style="background:#A6CE3820;border-left:4px solid #A6CE38;border-radius:4px;padding:8px;text-align:center"><div style="font-size:0.9em;font-weight:900;color:#A6CE38">'+pct+'%</div><div style="font-size:0.6em;color:#666;font-weight:700;text-transform:uppercase">Cumplimiento</div></div>';
+    h += '<div style="display:flex;gap:6px;margin-bottom:10px">';
+    h += retoBadge(lineColor, 'fa-arrow-trend-up', real, 'Avance Real');
+    h += retoBadge('#FBAF17', 'fa-bullseye', esperado, 'Avance Esperado');
+    h += retoBadge('#A6CE38', 'fa-gears', pct, 'Cumplimiento');
     h += '</div>';
     h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
-    h += '<div style="background:#0F385A15;border:1px solid #0F385A30;border-radius:6px;padding:8px;text-align:center"><div style="font-size:1em;font-weight:900;color:#0F385A">'+retos+'</div><div style="font-size:0.55em;color:#666;font-weight:700;text-transform:uppercase">Retos</div></div>';
-    h += '<div style="background:#0F385A15;border:1px solid #0F385A30;border-radius:6px;padding:8px;text-align:center"><div style="font-size:1em;font-weight:900;color:#0F385A">'+areas+'</div><div style="font-size:0.55em;color:#666;font-weight:700;text-transform:uppercase">Áreas</div></div>';
+    h += '<div style="background:white;border:1.5px solid #0F385A40;border-radius:8px;padding:10px 8px;text-align:center"><div style="font-size:1.3em;font-weight:900;color:#0F385A">'+retos+'</div><div style="font-size:0.55em;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:0.3px"># Retos</div></div>';
+    h += '<div style="background:white;border:1.5px solid #0F385A40;border-radius:8px;padding:10px 8px;text-align:center"><div style="font-size:1.3em;font-weight:900;color:#0F385A">'+areas+'</div><div style="font-size:0.55em;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:0.3px"># Áreas</div></div>';
     h += '</div>';
     h += '</div>';
 
@@ -1630,11 +1640,15 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
   h += '</div></div></div>';
 
   /* ===== ORGULLOSAMENTE ===== */
-  h += '<div class="slide" id="slide-orgullosamente" data-title="Orgullosamente Poli"><div class="sf" style="background:linear-gradient(135deg,#0F385A,#EC0677);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:40px;position:relative">';
-  h += '<img src="./public/img/brand/logo-poli.jpg" style="width:clamp(80px,12vw,160px);height:auto;margin-bottom:8px;filter:brightness(10);position:relative;">';
-  h += '<div style="font-size:clamp(24px,3.6vw,48px);font-weight:900;color:white;letter-spacing:2px;line-height:1.05;position:relative">SOMOS DIFERENTES,<br><span style="color:var(--yellow)">#SOMOS POLI.</span></div>';
-  h += '<div style="color:rgba(255,255,255,0.75);font-size:clamp(11px,1.1vw,15px);line-height:1.7;max-width:500px;position:relative">Una institución universitaria que transforma vidas, genera impacto positivo y lidera la educación superior con excelencia, pasión y originalidad.</div>';
-  h += '</div></div>';
+  h += '<div class="slide" id="slide-orgullosamente" data-title="Orgullosamente Poli"><div class="sf" style="display:flex;flex-direction:column;background:white;">';
+  h += '<div style="background:linear-gradient(135deg,#0F385A,#EC0677);padding:22px 22px 18px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px">';
+  h += '<div style="font-size:clamp(18px,2.6vw,32px);font-weight:900;color:white;letter-spacing:1.5px;line-height:1.05">SOMOS DIFERENTES, <span style="color:var(--yellow)">#SOMOS POLI.</span></div>';
+  h += '<div style="color:rgba(255,255,255,0.8);font-size:clamp(10px,1vw,13px);line-height:1.5;max-width:600px">Cuarta versión de Orgullosamente POLI 2025 — una jornada de homenaje a la excelencia institucional.</div>';
+  h += '</div>';
+  h += '<div style="flex:1;display:flex;align-items:center;justify-content:center;gap:28px;padding:22px 40px;background:#f8fafe">';
+  h += '<div onclick="window.open(\'https://www.youtube.com/watch?v=s08nJB-29NQ\',\'_blank\')" style="flex:1;max-width:390px;background:white;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(15,56,90,0.14);transition:transform 0.2s;border:2px solid #eef2f7" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'"><div style="background:var(--navy);padding:14px 18px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">▶️</span><div><div style="color:white;font-weight:900;font-size:0.88em;text-transform:uppercase">Cuarta versión Orgullosamente POLI 2025</div><div style="color:var(--cyan);font-size:0.67em;margin-top:1px">Video oficial — YouTube</div></div></div><div style="height:170px;background:linear-gradient(135deg,#0F385A,#EC0677);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div style="width:60px;height:60px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8em;border:3px solid rgba(255,255,255,0.4)">▶</div><div style="color:white;font-size:0.77em;opacity:0.85;letter-spacing:0.8px">Clic para ver en YouTube</div></div><div style="padding:12px 16px"><div style="font-weight:800;color:var(--navy);font-size:0.83em">Orgullosamente POLI 2025</div><div style="font-size:0.68em;color:#888;margin-top:2px">YouTube · Politécnico Grancolombiano</div></div></div>';
+  h += '<div onclick="window.open(\'https://www.poli.edu.co/noticias/cuarta-edicion-de-orgullosamente-poli-2025-una-jornada-de-homenaje-la-excelencia\',\'_blank\')" style="flex:1;max-width:390px;background:white;border-radius:18px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(15,56,90,0.14);transition:transform 0.2s;border:2px solid #eef2f7" onmouseenter="this.style.transform=\'scale(1.03)\'" onmouseleave="this.style.transform=\'scale(1)\'"><div style="background:var(--yellow);padding:14px 18px;display:flex;align-items:center;gap:10px"><span style="font-size:1.3em">📰</span><div><div style="color:var(--navy);font-weight:900;font-size:0.88em;text-transform:uppercase">Cuarta edición Orgullosamente POLI 2025</div><div style="color:var(--navy);font-size:0.67em;margin-top:1px;opacity:0.8">Una jornada de homenaje a la excelencia institucional</div></div></div><div style="height:170px;background:#0F385A;display:flex;align-items:center;justify-content:center;overflow:hidden"><img src="./Imagenes/Orgullosamente_Poli.png" style="max-width:100%;max-height:100%;object-fit:cover"></div><div style="padding:12px 16px"><div style="font-weight:800;color:var(--navy);font-size:0.83em">Cuarta edición de Orgullosamente POLI 2025</div><div style="font-size:0.68em;color:#888;margin-top:2px">poli.edu.co · Noticias</div></div></div>';
+  h += '</div></div></div>';
 
   /* ── mount ── */
   document.getElementById('main').insertAdjacentHTML('beforeend', h);
