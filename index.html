@@ -732,14 +732,14 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     h += '<div style="display:grid;grid-template-columns:1fr 1.6fr;gap:0;flex:0 0 auto;border-bottom:2px solid #eef2f7">';
 
     /* RETOS */
-    h += '<div style="padding:14px 18px;background:#f7faff;border-right:2px solid #eef2f7;display:flex;flex-direction:column;justify-content:center;height:100%;box-sizing:border-box">';
-    h += '<div style="font-weight:900;font-size:0.75em;color:#0F385A;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">Retos</div>';
-    h += '<div style="display:flex;gap:6px;margin-bottom:10px">';
+    h += '<div style="padding:14px 18px;background:#f7faff;border-right:2px solid #eef2f7;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center;height:100%;box-sizing:border-box">';
+    h += '<div style="font-weight:900;font-size:0.75em;color:#0F385A;text-transform:uppercase;letter-spacing:0.5px">Retos</div>';
+    h += '<div style="display:flex;gap:6px;width:100%">';
     h += retoBadge(lineColor, 'fa-arrow-trend-up', real, 'Avance Real');
     h += retoBadge('#FBAF17', 'fa-bullseye', esperado, 'Avance Esperado');
     h += retoBadge('#A6CE38', 'fa-gears', pct, 'Cumplimiento');
     h += '</div>';
-    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+    h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%">';
     h += '<div style="background:white;border:1.5px solid #0F385A40;border-radius:8px;padding:10px 8px;text-align:center"><div style="font-size:1.3em;font-weight:900;color:#0F385A">'+retos+'</div><div style="font-size:0.55em;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:0.3px"># Retos</div></div>';
     h += '<div style="background:white;border:1.5px solid #0F385A40;border-radius:8px;padding:10px 8px;text-align:center"><div style="font-size:1.3em;font-weight:900;color:#0F385A">'+areas+'</div><div style="font-size:0.55em;color:#666;font-weight:700;text-transform:uppercase;letter-spacing:0.3px"># Áreas</div></div>';
     h += '</div>';
