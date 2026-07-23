@@ -405,9 +405,9 @@ window.PDI_DATA = {
       "slideId": "cal-avance",
       "logroSlideId": "cal-logro",
       "slidePPT": "7/8",
-      "real": "100",
+      "real": "99",
       "esperado": "100",
-      "cumplimiento": "100",
+      "cumplimiento": "99",
       "retos": "103",
       "areas": "45",
       "logros": "Evaluación Docente 360° POLÍMERO — 291.000+ encuestas automatizadas, decisiones académicas fortalecidas | Visita evaluación externa oct 2025 — Informes preliminares favorables, informe institucional radicado | Plataforma de Seguimiento a Graduados — 100% acceso y reporte para autoevaluación | 14 talleres Saber Pro — 205 estudiantes, 327 asistencias, valoraciones >4,7 | 67 Programas de Doble Titulación — 65 Florida Global University + 2 Universidad Americana de Paraguay",
@@ -422,9 +422,9 @@ window.PDI_DATA = {
       "slideId": "edu-avance",
       "logroSlideId": "edu-logro",
       "slidePPT": "9/10",
-      "real": "98",
+      "real": "95",
       "esperado": "100",
-      "cumplimiento": "98",
+      "cumplimiento": "95",
       "retos": "18",
       "areas": "14",
       "logros": "Coterminales consolidados — 364 estudiantes Escuela TIC + 10 Medellín | Sede Medellín: metas superadas — 2.332 estudiantes antiguos (101%) + 402 nuevos (107%) | Metodología IA en currículos (6 pasos) — Diagnóstico pareto + matriz herramientas + estudio Target tendencias | 270 colegios Medellín — Liderazgo — formación para representantes, fortaleciendo posicionamiento | Jornadas SENA: 700+ inscritos — 140 aprendices conectados, recuperación posicionamiento | Reacreditación CNSC hasta octubre 2029 — visita oct 2025, evidencias entregadas, subsanaciones aprobadas | 7 microcertificaciones Escuela Negocios — Barismo con insignia digital + rutas escalonadas",
@@ -439,9 +439,9 @@ window.PDI_DATA = {
       "slideId": "exp-avance",
       "logroSlideId": "exp-logro",
       "slidePPT": "11/12",
-      "real": "100",
+      "real": "95",
       "esperado": "100",
-      "cumplimiento": "100",
+      "cumplimiento": "95",
       "retos": "40",
       "areas": "23",
       "logros": "+56.800 estudiantes matriculados — mayor número en la historia del Poli (+16% desde 2021-II) | 982 municipios — 89% del país — ampliación del 8% de cobertura territorial | +25.365 matriculados en 2025 — +37% entre 2021 y 2025, 15.976 en nuevos programas | Brand Equity: de 8,4 a 15,1 — conocimiento espontáneo +5 puntos en 3 años | Top 9° Ranking Top of Heart — Revista Gerente, rediseño modelo CSU",
@@ -473,9 +473,9 @@ window.PDI_DATA = {
       "slideId": "to-avance",
       "logroSlideId": "to-logro",
       "slidePPT": "15/16",
-      "real": "100",
+      "real": "86",
       "esperado": "100",
-      "cumplimiento": "100",
+      "cumplimiento": "86",
       "retos": "63",
       "areas": "35",
       "logros": "ITSM con InvGate (ITIL) — solución tecnológica para atender necesidades de servicio TI | ADN POLI — Inducción niveles 1-6 — piloto Polilab: meta 95/80% superada, comunicación 2026 lista | Sistema Gestión de Indicadores — Power Apps + Power Automate + SharePoint | Gestión de riesgos: madurez 3,5 — mesa especializada, 70% cobertura, 17 oportunidades estandarizadas | Archivo Digital cerrado — tablas retención + inventarios levantados con actas de soporte",
@@ -490,9 +490,9 @@ window.PDI_DATA = {
       "slideId": "sos-avance",
       "logroSlideId": "sos-logro",
       "slidePPT": "17/18",
-      "real": "99",
+      "real": "89",
       "esperado": "100",
-      "cumplimiento": "99",
+      "cumplimiento": "89",
       "retos": "42",
       "areas": "29",
       "logros": "Carbono neutralidad GEI 2024 — 3.531,11 tCO₂e, 738 créditos carbono neutralizados con CO2-CERO | Polishop lanzada — 25 marzo 2025 — polishop.poli.edu.co, hito institucional Huella Grancolombiana | 98% meta Presupuesto Negociable — COP $1.765M de $1.800M, sobrecumplimientos Q1 y Q2 | Política Institucional de Graduados actualizada — integrada al Modelo Seguimiento, en consideración Consejo Académico",
@@ -1025,80 +1025,87 @@ window.PDI_DATA = {
   "objetivos": [
     {
       "id": "OE-01",
-      "nombre": "Fortalecer la oferta educativa y la innovación curricular",
+      "nombre": "Asegurar la alta calidad a nivel institucional",
       "meta": "100",
-      "real": "100",
+      "real": "99",
       "linea": "calidad"
     },
     {
       "id": "OE-02",
-      "nombre": "Asegurar la alta calidad a nivel institucional",
+      "nombre": "Fortalecer la oferta educativa y la innovación curricular",
       "meta": "100",
-      "real": "100",
+      "real": "97",
       "linea": "calidad"
     },
     {
       "id": "OE-03",
-      "nombre": "Contribuir a la inclusión, la proyección social y el cuidado del medio ambiente",
-      "meta": "100",
-      "real": "96",
-      "linea": "sostenibilidad"
-    },
-    {
-      "id": "OE-04",
-      "nombre": "Promover una cultura de optimización de recursos financieros como apalancador de la estrategia",
-      "meta": "100",
-      "real": "100",
-      "linea": "sostenibilidad"
-    },
-    {
-      "id": "OE-05",
-      "nombre": "Garantizar una experiencia significativa y de valor agregado a la comunidad Poli",
-      "meta": "100",
-      "real": "99",
-      "linea": "experiencia"
-    },
-    {
-      "id": "OE-06",
-      "nombre": "Asegurar una arquitectura tecnológica centrada en la experiencia de la comunidad educativa",
-      "meta": "100",
-      "real": "100",
-      "linea": "transformacion"
-    },
-    {
-      "id": "OE-07",
       "nombre": "Crecer con compromiso social",
-      "meta": "100",
-      "real": "100",
-      "linea": "expansion"
-    },
-    {
-      "id": "OE-08",
-      "nombre": "Incursionar en los niveles de educación media y de educación para el trabajo y el desarrollo humano",
-      "meta": "100",
-      "real": "100",
-      "linea": "educacion"
-    },
-    {
-      "id": "OE-09",
-      "nombre": "Impulsar y potenciar la educación continua",
       "meta": "100",
       "real": "98",
       "linea": "educacion"
     },
     {
-      "id": "OE-10",
-      "nombre": "Fortalecer la gestión por procesos y la toma de decisiones basada en el análisis de los datos",
+      "id": "OE-04",
+      "nombre": "Incursionar en educación media y para el trabajo",
       "meta": "100",
       "real": "100",
+      "linea": "educacion"
+    },
+    {
+      "id": "OE-05",
+      "nombre": "Fortalecer el posicionamiento regional",
+      "meta": "100",
+      "real": "98",
+      "linea": "expansion"
+    },
+    {
+      "id": "OE-06",
+      "nombre": "Aumentar cobertura nacional",
+      "meta": "100",
+      "real": "97",
+      "linea": "expansion"
+    },
+    {
+      "id": "OE-07",
+      "nombre": "Mejorar la experiencia del estudiante",
+      "meta": "100",
+      "real": "99",
       "linea": "experiencia"
     },
     {
-      "id": "OE-11",
-      "nombre": "Contar con un equipo humano feliz y apasionado, que trabaja de forma colaborativa para alcanzar las metas institucionales",
+      "id": "OE-08",
+      "nombre": "Fortalecer la cultura de servicio.",
       "meta": "100",
-      "real": "100",
+      "real": "98",
+      "linea": "experiencia"
+    },
+    {
+      "id": "OE-09",
+      "nombre": "Fortalecer la buena gobernanza",
+      "meta": "100",
+      "real": "86",
       "linea": "transformacion"
+    },
+    {
+      "id": "OE-10",
+      "nombre": "Innovar con tecnología ágil y eficiencia operativa",
+      "meta": "100",
+      "real": "88",
+      "linea": "transformacion"
+    },
+    {
+      "id": "OE-11",
+      "nombre": "Fortalecer la gestión financiera sostenible",
+      "meta": "100",
+      "real": "98",
+      "linea": "sostenibilidad"
+    },
+    {
+      "id": "OE-12",
+      "nombre": "Integrar criterios ASG en la gestión",
+      "meta": "100",
+      "real": "89",
+      "linea": "sostenibilidad"
     }
   ],
   "reportes": [
@@ -1309,7 +1316,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "3/01/2022",
+      "Comienzo": "44564",
       "Fin": "30/11/2026",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1337,7 +1344,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "3/02/2025",
+      "Comienzo": "45691",
       "Fin": "12/08/2026",
       "Avance": "Plataforma de inducción: Pruebas avanzan en los distintos niveles del interactivo ya desplegado en ambiente productivo de Canvas.\nModelo de Employee Experience: Se construyó el modelo institucional con base en el diagnóstico realizado.",
       "Siguientes Tareas": "Validar los niveles del interactivo con cada una de las áreas responsables.\nElaborar el plan de trabajo para implementar el modelo y cerrar las brechas identificadas en el diagnóstico.",
@@ -1365,7 +1372,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "3/02/2025",
+      "Comienzo": "45691",
       "Fin": "1/04/2026",
       "Avance": "Se realizaron 12 Hablemos de Investigación, 9 Aulas Abiertas (400+ asistentes) y se ejecutó el MOOC con 773 estudiantes; continúan 8 jóvenes investigadores y se publicaron 3 artículos.\nLa ruta de formación está implementada en el 89% de los programas, se construyó el Manual de Semilleros y fueron aprobados 26 proyectos regionales.",
       "Siguientes Tareas": "Acompañar la ejecución de proyectos DTI y validar productos.\nFinalizar la matriz de planes y continuar asesoría para artículos científicos.\nActualizar el plan de trabajo para implementación 2026.",
@@ -1393,7 +1400,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "3/11/2025",
+      "Comienzo": "45964",
       "Fin": "15/05/2026",
       "Avance": "Contratación con Universia realizada.\nRevisión de reportes entregados por la plataforma y comparativo con reportes SNIES actuales.",
       "Siguientes Tareas": "Parametrizar la herramienta, ejecutar pruebas y preparar capacitación y lanzamiento.",
@@ -1421,7 +1428,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "22/10/2025",
+      "Comienzo": "45952",
       "Fin": "31/12/2026",
       "Avance": "Diagnóstico institucional de gestión de datos realizado.\nPropuesta de funcionamiento del Comité de Gobierno de Datos construida.\nIdentificación de fuentes oficiales institucionales completada",
       "Siguientes Tareas": "Formalizar el funcionamiento del Gobierno de Datos.\nFinalizar el levantamiento de datos utilizados en cada proceso",
@@ -1449,7 +1456,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "1/04/2025",
+      "Comienzo": "45748",
       "Fin": "17/04/2026",
       "Avance": "Actualización del nuevo modelo de mejoramiento.\nActualización de la política POLISIGS.\nPriorización de herramientas para el micrositio y elaboración de los primeros bocetos",
       "Siguientes Tareas": "Construir el micrositio de mejoramiento y publicar herramientas y fuentes",
@@ -1477,7 +1484,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "29/09/2025",
+      "Comienzo": "45929",
       "Fin": "20/04/2026",
       "Avance": "Estructura de datos para migración al CRM definida.\nWorkflows del proceso de mercadeo definidos.",
       "Siguientes Tareas": "Parametrizar CRM, implementar workflows, crear piezas, realizar pruebas del MVP.",
@@ -1505,7 +1512,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "100.600.000.246",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "28/01/2026",
+      "Comienzo": "46050",
       "Fin": "26/05/2026",
       "Avance": "Corrección de URLs con errores (40X, 50X).\nContratación con SEED para la implementación de mejoras SEO y Core Web Vitals.",
       "Siguientes Tareas": "Iniciar sprints semanales para ejecutar el backlog priorizado.",
@@ -1533,7 +1540,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "12/08/2025",
-      "Comienzo": "1/05/2025",
+      "Comienzo": "45778",
       "Fin": "8/04/2026",
       "Avance": "Desarrollo de funcionalidades para el módulo profesores y administrador.",
       "Siguientes Tareas": "Migrar la aplicación a infraestructura Poli para permitir escalamiento y soporte.",
@@ -1561,7 +1568,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "162.800.633",
       "6. Orden inversión CAPEX": "100.600.000.217",
       "7. Fecha de seguimiento": "14/10/2025",
-      "Comienzo": "16/09/2024",
+      "Comienzo": "45551",
       "Fin": "5/12/2025",
       "Avance": "Validación de módulos funcionales.\nAplicación de encuestas M0 2026-1 con la nueva herramienta.",
       "Siguientes Tareas": "Finalizar el módulo de reportería y validar indicadores de las encuestas",
@@ -1589,7 +1596,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "1/09/2025",
+      "Comienzo": "45901",
       "Fin": "30/10/2026",
       "Avance": "Demoliciones finalizadas; obra en fase de acabados y levantamiento de muros.\nTraslado y baja de activos completados; donación coordinada con Huella.\nLook & feel del amoblamiento aprobado y en producción.\nPlan de comunicaciones ejecutado; valla de Bloque C instalada.",
       "Siguientes Tareas": "Refuerzo de información a docentes reubicados.\nInstalación de branding en Bloque I.\nMayor comunicación en pantallas.\nInstalación de torniquetes, cámaras de seguridad y Access Points TI",
@@ -1617,7 +1624,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "3/02/2025",
+      "Comienzo": "45691",
       "Fin": "28/04/2026",
       "Avance": "Despliegue a producción del upgrade de DigiSign.\nIntegración funcional del portal del estudiante con servicios institucionales: edición de datos, visualización de requisitos, consumo de endpoints (pago, encuesta de graduandos, paz y salvos)",
       "Siguientes Tareas": "Habilitar accesos y permisos para desplegar en ambientes Poli (QA).\nAvanzar con pruebas, validaciones y ajustes con funcionales y QA.",
@@ -1645,7 +1652,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "11/09/2023",
-      "Comienzo": "21/04/2023",
+      "Comienzo": "45037",
       "Fin": "3/01/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1673,7 +1680,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "24/01/2025",
-      "Comienzo": "17/12/2024",
+      "Comienzo": "45643",
       "Fin": "15/12/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1701,7 +1708,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "2/06/2022",
+      "Comienzo": "44714",
       "Fin": "26/01/2023",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1729,7 +1736,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "13/01/2025",
+      "Comienzo": "45670",
       "Fin": "17/12/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1757,7 +1764,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "16/05/2022",
+      "Comienzo": "44697",
       "Fin": "10/01/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1785,7 +1792,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "767.147.869",
       "6. Orden inversión CAPEX": "100.600.000.213",
       "7. Fecha de seguimiento": "16/09/2024",
-      "Comienzo": "3/06/2024",
+      "Comienzo": "45446",
       "Fin": "31/01/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1813,7 +1820,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "2/03/2022",
+      "Comienzo": "44622",
       "Fin": "13/12/2023",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1841,7 +1848,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "17/03/2023",
+      "Comienzo": "45002",
       "Fin": "31/12/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1869,7 +1876,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "19/10/2023",
+      "Comienzo": "45218",
       "Fin": "4/12/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1897,7 +1904,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "100.600.000.186",
       "7. Fecha de seguimiento": "31/07/2023",
-      "Comienzo": "1/02/2023",
+      "Comienzo": "44958",
       "Fin": "18/07/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1925,7 +1932,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "1/02/2024",
+      "Comienzo": "45323",
       "Fin": "1/10/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1953,7 +1960,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "31/07/2023",
-      "Comienzo": "5/07/2022",
+      "Comienzo": "44747",
       "Fin": "12/03/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -1981,7 +1988,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "3/06/2022",
+      "Comienzo": "44715",
       "Fin": "14/02/2023",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2009,7 +2016,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "31/07/2023",
-      "Comienzo": "1/01/2023",
+      "Comienzo": "44927",
       "Fin": "2/07/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2037,7 +2044,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "5/12/2023",
+      "Comienzo": "45265",
       "Fin": "14/06/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2065,7 +2072,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "2/01/2023",
+      "Comienzo": "44928",
       "Fin": "23/12/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2093,7 +2100,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "20/05/2024",
+      "Comienzo": "45432",
       "Fin": "26/11/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2121,7 +2128,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "2/01/2023",
+      "Comienzo": "44928",
       "Fin": "10/08/2023",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2149,7 +2156,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "16/11/2023",
+      "Comienzo": "45246",
       "Fin": "14/05/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2177,7 +2184,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "1.719.376.386",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "31/01/2023",
+      "Comienzo": "44957",
       "Fin": "14/02/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2205,7 +2212,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "10/01/2023",
+      "Comienzo": "44936",
       "Fin": "27/12/2023",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2233,7 +2240,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "2/11/2021",
+      "Comienzo": "44502",
       "Fin": "17/07/2023",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2261,7 +2268,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "100.600.000.189",
       "7. Fecha de seguimiento": "6/05/2024",
-      "Comienzo": "20/02/2023",
+      "Comienzo": "44977",
       "Fin": "11/07/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2289,7 +2296,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "27/12/2021",
+      "Comienzo": "44557",
       "Fin": "29/07/2022",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2317,7 +2324,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "7/02/2022",
+      "Comienzo": "44599",
       "Fin": "10/02/2023",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2345,7 +2352,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "15/01/2024",
+      "Comienzo": "45306",
       "Fin": "30/09/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2373,7 +2380,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "1/04/2024",
+      "Comienzo": "45383",
       "Fin": "30/10/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2401,7 +2408,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "262.258.286",
       "6. Orden inversión CAPEX": "1.006.000.234",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "13/01/2025",
+      "Comienzo": "45670",
       "Fin": "24/11/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2429,7 +2436,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "243.325.845",
       "6. Orden inversión CAPEX": "1.006.000.226",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "15/11/2024",
+      "Comienzo": "45611",
       "Fin": "7/11/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2457,7 +2464,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "19/10/2023",
+      "Comienzo": "45218",
       "Fin": "25/11/2024",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2485,7 +2492,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "628.523.708",
       "6. Orden inversión CAPEX": "1.006.000.230",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "2/12/2024",
+      "Comienzo": "45628",
       "Fin": "31/10/2025",
       "Avance": "",
       "Siguientes Tareas": "",
@@ -2513,7 +2520,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "3/11/2025",
+      "Comienzo": "45964",
       "Fin": "3/11/2025",
       "Avance": "Proyecto en fase de planeación. Enfoque en reducción de tiempos y mejora de trazabilidad del proceso contractual con integración a herramientas tecnológicas existentes.",
       "Siguientes Tareas": "",
@@ -2541,7 +2548,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "1/01/2026",
+      "Comienzo": "46023",
       "Fin": "1/01/2026",
       "Avance": "Proyecto en fase de planeación. Objetivo de automatizar el proceso de homologaciones mediante IA en el contexto de la red Ilumno.",
       "Siguientes Tareas": "",
@@ -2569,7 +2576,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "1/01/2026",
+      "Comienzo": "46023",
       "Fin": "1/01/2026",
       "Avance": "Propuestas de reforma cargadas para programas del cronograma 2025-1 y 2025-2. En fase de revisión curricular, elaboración de sílabos y actualización de material.",
       "Siguientes Tareas": "",
@@ -2597,7 +2604,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "16/03/2026",
+      "Comienzo": "46097",
       "Fin": "16/03/2026",
       "Avance": "Proyecto en fase de planeación. Articulación prevista con el sistema ADVISER y la analítica institucional existente.",
       "Siguientes Tareas": "",
@@ -2625,7 +2632,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "24/09/2025",
+      "Comienzo": "45924",
       "Fin": "24/09/2025",
       "Avance": "Proyecto en fase de planeación. Articulación prevista con la plataforma de gestión curricular y el modelo de reforma curricular.",
       "Siguientes Tareas": "",
@@ -2653,7 +2660,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "2/02/2026",
+      "Comienzo": "46055",
       "Fin": "2/02/2026",
       "Avance": "Proyecto en fase de planeación. Diseño del modelo de Voice IA para integración con sistemas de cartera institucional.",
       "Siguientes Tareas": "",
@@ -2681,7 +2688,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "2/02/2026",
+      "Comienzo": "46055",
       "Fin": "2/02/2026",
       "Avance": "Piloto aprobado e implementado en enero 2025. Herramienta en operación con presupuesto ejecutado.",
       "Siguientes Tareas": "",
@@ -2709,7 +2716,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "1/03/2024",
-      "Comienzo": "1/02/2024",
+      "Comienzo": "45323",
       "Fin": "6/03/2025",
       "Avance": "Proyecto en stand by. Diagnóstico de necesidades y acercamiento con proveedor realizados. Pendiente viabilidad financiera y operativa.",
       "Siguientes Tareas": "",
@@ -2737,7 +2744,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "31/01/2023",
+      "Comienzo": "44957",
       "Fin": "29/01/2025",
       "Avance": "Proyecto en stand by. Análisis de viabilidad realizados. Pendiente definición de modelo pedagógico y regulatorio.",
       "Siguientes Tareas": "",
@@ -2765,7 +2772,7 @@ window.PDI_DATA = {
       "6.2. Presupuesto CAPEX ejecutado": "",
       "6. Orden inversión CAPEX": "",
       "7. Fecha de seguimiento": "",
-      "Comienzo": "31/01/2023",
+      "Comienzo": "44957",
       "Fin": "18/11/2024",
       "Avance": "Proyecto en stand by. Análisis de viabilidad y contexto regulatorio realizados. Pendiente portafolio de programas ETDH y modelo de operación.",
       "Siguientes Tareas": "",
@@ -2796,8 +2803,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "274-2025-12-31",
-      "dd": "1"
+      "Llave": "274-2025-12-31"
     },
     {
       "Id": "202",
@@ -2819,8 +2825,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "0",
-      "Llave": "202-2025-12-31",
-      "dd": "1"
+      "Llave": "202-2025-12-31"
     },
     {
       "Id": "361",
@@ -2842,8 +2847,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "2",
-      "Llave": "361-2025-12-31",
-      "dd": "1"
+      "Llave": "361-2025-12-31"
     },
     {
       "Id": "14",
@@ -2865,8 +2869,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "14-2025-12-31",
-      "dd": "1"
+      "Llave": "14-2025-12-31"
     },
     {
       "Id": "14.1",
@@ -2888,8 +2891,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "14.1-2025-12-31",
-      "dd": "1"
+      "Llave": "14.1-2025-12-31"
     },
     {
       "Id": "14.2",
@@ -2911,8 +2913,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "14.2-2025-12-31",
-      "dd": "1"
+      "Llave": "14.2-2025-12-31"
     },
     {
       "Id": "14.3",
@@ -2934,8 +2935,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "14.3-2025-12-31",
-      "dd": "1"
+      "Llave": "14.3-2025-12-31"
     },
     {
       "Id": "14.4",
@@ -2957,8 +2957,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "14.4-2025-12-31",
-      "dd": "1"
+      "Llave": "14.4-2025-12-31"
     },
     {
       "Id": "109",
@@ -2980,8 +2979,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "109-2025-12-31",
-      "dd": "1"
+      "Llave": "109-2025-12-31"
     },
     {
       "Id": "204",
@@ -3003,8 +3001,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "$",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "204-2025-12-31",
-      "dd": "1"
+      "Llave": "204-2025-12-31"
     },
     {
       "Id": "205",
@@ -3026,8 +3023,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "$",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "205-2025-12-31",
-      "dd": "1"
+      "Llave": "205-2025-12-31"
     },
     {
       "Id": "207",
@@ -3049,8 +3045,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "$",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "207-2025-12-31",
-      "dd": "1"
+      "Llave": "207-2025-12-31"
     },
     {
       "Id": "376",
@@ -3072,8 +3067,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "$",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "376-2025-12-31",
-      "dd": "1"
+      "Llave": "376-2025-12-31"
     },
     {
       "Id": "386.2",
@@ -3087,16 +3081,15 @@ window.PDI_DATA = {
       "Periodo": "2025-2",
       "Linea": "Educación_para_toda_la_vida",
       "Objetivo": "Impulsar y potenciar la educación continua",
-      "Meta": "7446.830696",
-      "Ejecucion": "7473.8925079999999",
+      "Meta": "100",
+      "Ejecucion": "100.36",
       "Cumplimiento": "1.0036340039279443",
       "Cumplimiento Real": "1.0036340039279443",
-      "Meta_Signo": "$",
-      "Ejecucion_Signo": "$",
+      "Meta_Signo": "%",
+      "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "386.2-2025-12-31",
-      "dd": "1"
+      "Llave": "386.2-2025-12-31"
     },
     {
       "Id": "386.3",
@@ -3110,16 +3103,15 @@ window.PDI_DATA = {
       "Periodo": "2025-2",
       "Linea": "Educación_para_toda_la_vida",
       "Objetivo": "Impulsar y potenciar la educación continua",
-      "Meta": "5568.7793190000002",
-      "Ejecucion": "6395.6797500000002",
+      "Meta": "100",
+      "Ejecucion": "114.85",
       "Cumplimiento": "1.1484886334386992",
       "Cumplimiento Real": "1.1484886334386992",
-      "Meta_Signo": "$",
-      "Ejecucion_Signo": "$",
+      "Meta_Signo": "%",
+      "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "386.3-2025-12-31",
-      "dd": "1"
+      "Llave": "386.3-2025-12-31"
     },
     {
       "Id": "203",
@@ -3141,8 +3133,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "$",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "203-2025-12-31",
-      "dd": "1"
+      "Llave": "203-2025-12-31"
     },
     {
       "Id": "148",
@@ -3164,8 +3155,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "1",
-      "Llave": "148-2025-12-31",
-      "dd": "1"
+      "Llave": "148-2025-12-31"
     },
     {
       "Id": "466",
@@ -3187,8 +3177,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "1",
-      "Llave": "466-2025-12-31",
-      "dd": "1"
+      "Llave": "466-2025-12-31"
     },
     {
       "Id": "386.1",
@@ -3202,16 +3191,15 @@ window.PDI_DATA = {
       "Periodo": "2025-2",
       "Linea": "Educación_para_toda_la_vida",
       "Objetivo": "Impulsar y potenciar la educación continua",
-      "Meta": "4042.632396",
-      "Ejecucion": "4700.6947630000004",
+      "Meta": "100",
+      "Ejecucion": "116.28",
       "Cumplimiento": "1.1627806593671794",
       "Cumplimiento Real": "1.1627806593671794",
-      "Meta_Signo": "$",
-      "Ejecucion_Signo": "$",
+      "Meta_Signo": "%",
+      "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "386.1-2025-12-31",
-      "dd": "1"
+      "Llave": "386.1-2025-12-31"
     },
     {
       "Id": "385",
@@ -3225,16 +3213,15 @@ window.PDI_DATA = {
       "Periodo": "2025-2",
       "Linea": "Educación_para_toda_la_vida",
       "Objetivo": "Impulsar y potenciar la educación continua",
-      "Meta": "17058.242410999999",
-      "Ejecucion": "18570.267021",
+      "Meta": "100",
+      "Ejecucion": "108.86",
       "Cumplimiento": "1.0886389449492739",
       "Cumplimiento Real": "1.0886389449492739",
-      "Meta_Signo": "$",
-      "Ejecucion_Signo": "$",
+      "Meta_Signo": "%",
+      "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "385-2025-12-31",
-      "dd": "1"
+      "Llave": "385-2025-12-31"
     },
     {
       "Id": "423",
@@ -3256,8 +3243,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "1",
-      "Llave": "423-2025-12-31",
-      "dd": "1"
+      "Llave": "423-2025-12-31"
     },
     {
       "Id": "424",
@@ -3279,8 +3265,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "424-2025-12-31",
-      "dd": "1"
+      "Llave": "424-2025-12-31"
     },
     {
       "Id": "377",
@@ -3302,8 +3287,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "$",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "377-2025-12-31",
-      "dd": "1"
+      "Llave": "377-2025-12-31"
     },
     {
       "Id": "367",
@@ -3325,8 +3309,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "2",
-      "Llave": "367-2025-12-31",
-      "dd": "1"
+      "Llave": "367-2025-12-31"
     },
     {
       "Id": "244",
@@ -3348,8 +3331,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "244-2025-12-31",
-      "dd": "1"
+      "Llave": "244-2025-12-31"
     },
     {
       "Id": "334",
@@ -3371,8 +3353,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "1",
-      "Llave": "334-2025-12-31",
-      "dd": "1"
+      "Llave": "334-2025-12-31"
     },
     {
       "Id": "77",
@@ -3394,8 +3375,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "1",
-      "Llave": "77-2025-12-31",
-      "dd": "1"
+      "Llave": "77-2025-12-31"
     },
     {
       "Id": "96",
@@ -3417,8 +3397,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "96-2025-12-31",
-      "dd": "1"
+      "Llave": "96-2025-12-31"
     },
     {
       "Id": "193",
@@ -3440,8 +3419,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "1",
-      "Llave": "193-2025-12-31",
-      "dd": "1"
+      "Llave": "193-2025-12-31"
     },
     {
       "Id": "194",
@@ -3463,8 +3441,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "194-2025-12-31",
-      "dd": "1"
+      "Llave": "194-2025-12-31"
     },
     {
       "Id": "200",
@@ -3486,8 +3463,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "1",
-      "Llave": "200-2025-12-31",
-      "dd": "1"
+      "Llave": "200-2025-12-31"
     },
     {
       "Id": "245",
@@ -3509,8 +3485,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "1",
-      "Llave": "245-2025-12-31",
-      "dd": "1"
+      "Llave": "245-2025-12-31"
     },
     {
       "Id": "276",
@@ -3532,8 +3507,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "1",
-      "Llave": "276-2025-12-31",
-      "dd": "1"
+      "Llave": "276-2025-12-31"
     },
     {
       "Id": "277",
@@ -3555,8 +3529,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "1",
       "Decimales_Ejecucion": "1",
-      "Llave": "277-2025-12-31",
-      "dd": "1"
+      "Llave": "277-2025-12-31"
     },
     {
       "Id": "364",
@@ -3578,8 +3551,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "364-2025-12-31",
-      "dd": "1"
+      "Llave": "364-2025-12-31"
     },
     {
       "Id": "369",
@@ -3601,8 +3573,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "369-2025-12-31",
-      "dd": "1"
+      "Llave": "369-2025-12-31"
     },
     {
       "Id": "379",
@@ -3624,8 +3595,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "379-2025-12-31",
-      "dd": "1"
+      "Llave": "379-2025-12-31"
     },
     {
       "Id": "98",
@@ -3647,8 +3617,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "98-2025-12-31",
-      "dd": "1"
+      "Llave": "98-2025-12-31"
     },
     {
       "Id": "476",
@@ -3670,8 +3639,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "476-2025-12-31",
-      "dd": "1"
+      "Llave": "476-2025-12-31"
     },
     {
       "Id": "460",
@@ -3693,8 +3661,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "1",
-      "Llave": "460-2025-12-31",
-      "dd": "1"
+      "Llave": "460-2025-12-31"
     },
     {
       "Id": "339",
@@ -3716,8 +3683,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "1",
-      "Llave": "339-2025-12-31",
-      "dd": "1"
+      "Llave": "339-2025-12-31"
     },
     {
       "Id": "325",
@@ -3739,8 +3705,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "325-2025-12-31",
-      "dd": "1"
+      "Llave": "325-2025-12-31"
     },
     {
       "Id": "323",
@@ -3762,8 +3727,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "ENT",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "323-2025-12-31",
-      "dd": "1"
+      "Llave": "323-2025-12-31"
     },
     {
       "Id": "542",
@@ -3785,8 +3749,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "%",
       "Decimales_Meta": "0",
       "Decimales_Ejecucion": "0",
-      "Llave": "331-2025-06-30",
-      "dd": "1"
+      "Llave": "331-2025-06-30"
     },
     {
       "Id": "332",
@@ -3808,8 +3771,7 @@ window.PDI_DATA = {
       "Ejecucion_Signo": "DEC",
       "Decimales_Meta": "2",
       "Decimales_Ejecucion": "2",
-      "Llave": "332-2025-12-31",
-      "dd": "1"
+      "Llave": "332-2025-12-31"
     }
   ],
   "retos_unidades": [
@@ -3819,7 +3781,7 @@ window.PDI_DATA = {
     },
     {
       "Unidad": "Vicerrectoría académica",
-      "2025": "1.00"
+      "2025": "0.97"
     },
     {
       "Unidad": "Vicerrectoría del estudiante",
@@ -3827,7 +3789,7 @@ window.PDI_DATA = {
     },
     {
       "Unidad": "Vicerrectoría de crecimiento",
-      "2025": "1.00"
+      "2025": "0.99"
     },
     {
       "Unidad": "Vicerrectoría Financiera",
@@ -3835,7 +3797,7 @@ window.PDI_DATA = {
     },
     {
       "Unidad": "Sede Medellín",
-      "2025": "0.99"
+      "2025": "0.98"
     }
   ]
 };

@@ -42,13 +42,25 @@ data/
 │   ├── schema.md
 │   └── README.md
 │
-├── proyectos/             ← 6. Maestro de proyectos
-│   ├── proyectos.xlsx
+├── proyectos/             ← 6. Maestro de proyectos (2 fuentes)
+│   ├── proyectos.xlsx                       ← bundle key `proyectos`
+│   ├── centroDeProyectos_PMO_2026.xlsx      ← bundle key `proyectos_pmo`
 │   ├── schema.md
 │   └── README.md
 │
-├── objetivos/             ← 7. CMI estratégico
-│   ├── objetivos.xlsx
+├── objetivos/             ← 7. CMI estratégico (retos/metas globales)
+│   ├── objetivos.xlsx                       ← bundle key `objetivos`
+│   ├── Resultados_Consolidados_SGING.xlsx   ← referencia oficial SGING (no se bundlea)
+│   ├── schema.md
+│   └── README.md
+│
+├── indicadores/           ← 7b. Detalle CMI (SGING) — bundle key `cmi_estrategico`
+│   ├── CMI Estrategico.xlsx
+│   ├── schema.md
+│   └── README.md
+│
+├── retos/                 ← 7c. Consolidado de retos por unidad
+│   ├── Consolidado_Retos_PDI.xlsx           ← bundle key `retos_unidades`
 │   ├── schema.md
 │   └── README.md
 │
@@ -62,6 +74,42 @@ data/
     ├── schema.md
     └── README.md
 ```
+
+> Nota: la lista completa y autoritativa de fuentes que se incrustan en
+> `data-bundle.js` está en `SOURCES` dentro de
+> [`../scripts/bundle_data.py`](../scripts/bundle_data.py) — si agregas un
+> XLSX nuevo, regístralo ahí primero.
+
+---
+
+## CMI y SGING
+
+- `data/objetivos/objetivos.xlsx` es la fuente de los **retos y metas estratégicas**.
+- El detalle del CMI estratégico proviene de SGING y vive en
+  `data/indicadores/CMI Estrategico.xlsx`; se incorpora al bundle como
+  `cmi_estrategico`.
+- `data/objetivos/Resultados_Consolidados_SGING.xlsx` es la referencia
+  oficial trasladada desde SGING para validar resultados consolidados.
+- `Catalogo de Indicadores.xlsx` (mapeo indicador → `Linea_Estrategica` →
+  `Objetivo_Estrategico`) **no está en este repositorio**: es un archivo
+  externo del proyecto `SGING` usado sólo como consulta cruzada al preparar
+  datos (ver `extract_catalogo_sging.py` en la raíz del repo).
+- `objetivos.xlsx` no debe utilizarse como la fuente primaria de indicadores detallados; su rol es estratégico y de retos globales.
+
+### Carga en vivo de CMI Estratégico
+
+Desde que `index.html` incluye `vendor/xlsx.full.min.js` (SheetJS), la app ya
+no depende exclusivamente de `data-bundle.js` para `cmi_estrategico`:
+
+1. Al cargar la página, intenta `fetch('./data/indicadores/CMI Estrategico.xlsx')`.
+2. Si el fetch funciona (la app se sirve por HTTP/HTTPS, no abierta con doble clic `file://`), parsea el XLSX con SheetJS y **sobrescribe** `window.PDI_DATA.cmi_estrategico` con esos datos frescos.
+3. Si el fetch falla (CORS en `file://`, archivo movido, etc.), se conserva silenciosamente el `cmi_estrategico` que ya trae `data-bundle.js` (con un `console.warn`).
+
+Esto significa que para el CMI detallado puedes editar
+`data/indicadores/CMI Estrategico.xlsx`, guardar, y recargar el navegador
+(sirviendo por HTTP) sin correr `scripts/bundle_data.py` — aunque sigue
+siendo buena práctica regenerar el bundle para que quede consistente para
+quien abra la app en `file://` o en GitHub Pages con caché.
 
 ---
 

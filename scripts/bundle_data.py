@@ -98,12 +98,20 @@ def read_xlsx(path: str, sheet_name: str) -> list[dict]:
     for row in rows[1:]:
         if all(not row.get(c) for c in col_order):
             continue
+        order_value = row.get('orden') or row.get('Orden')
+        if order_value is not None and str(order_value).strip() != "":
+            try:
+                order_value = int(float(str(order_value).strip()))
+            except (ValueError, TypeError):
+                order_value = str(order_value).strip()
         rec = {}
         for c in col_order:
             h = headers.get(c)
             if h:
                 rec[h] = row.get(c, "")
         if rec:
+            if order_value is not None and order_value != "":
+                rec['orden'] = order_value
             out.append(rec)
     return out
 

@@ -6,6 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script src="./data-bundle.js"></script>
+<script src="./vendor/xlsx.full.min.js"></script>
 <style>
 /* === Reset === */
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -255,9 +256,36 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
 </div><!-- /#main -->
 
 <script>
-(function () {
-  var D = window.PDI_DATA;
-  if (!D) {
+(async function () {
+  var D = window.PDI_DATA || {};
+
+  async function readXlsx(url, sheetName) {
+    var res = await fetch(url, { cache: 'no-cache' });
+    if (!res.ok) throw new Error('Fetch failed: ' + res.status + ' ' + res.statusText);
+    var buffer = await res.arrayBuffer();
+    var wb = XLSX.read(buffer, { type: 'array' });
+    var sheet = sheetName && wb.SheetNames.includes(sheetName) ? sheetName : wb.SheetNames[0];
+    if (!sheet) throw new Error('No sheet found in workbook');
+    return XLSX.utils.sheet_to_json(wb.Sheets[sheet], { defval: '' });
+  }
+
+  async function loadCmiEstrat() {
+    try {
+      var rows = await readXlsx('./data/indicadores/CMI Estrategico.xlsx', 'CMI Estrategico');
+      D.cmi_estrategico = rows;
+      console.info('CMI Estrategico cargado desde XLSX:', rows.length, 'filas');
+    } catch (err) {
+      console.warn('No se pudo cargar CMI Estrategico desde XLSX:', err);
+    }
+  }
+
+  if (typeof XLSX !== 'undefined') {
+    await loadCmiEstrat();
+  } else {
+    console.warn('SheetJS no está cargado. No se cargará CMI Estrategico desde XLSX');
+  }
+
+  if (!window.PDI_DATA || Object.keys(D).length === 0) {
     document.getElementById('main').innerHTML = '<div style="padding:40px;text-align:center"><h1>Error</h1><p>No se encontró data-bundle.js</p></div>';
     return;
   }
@@ -588,18 +616,29 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
   /* ===== AVANCE DETAIL SLIDES (6 líneas) — NUEVO LAYOUT ===== */
   /* Función para parsear fecha DD/MM/YYYY a Date */
   function parseDate(dateStr) {
-    if (!dateStr) return new Date();
-    var parts = String(dateStr).split('/');
-    if (parts.length === 3) {
-      return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+    if (!dateStr) return null;
+    var value = String(dateStr).trim();
+    if (/^\d+(?:\.\d+)?$/.test(value)) {
+      var serial = parseFloat(value);
+      // Excel serial date to JS date (Excel 1900 date system)
+      var jsTime = Math.round((serial - 25569) * 86400 * 1000);
+      var date = new Date(jsTime);
+      return Number.isFinite(date.getTime()) ? date : null;
     }
-    return new Date();
+    var parts = value.split('/');
+    if (parts.length === 3) {
+      var date = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+      return Number.isFinite(date.getTime()) ? date : null;
+    }
+    return null;
   }
 
   /* Gantt timeline con escala de años */
-  function ganttTimeline(nombre, fechaIni, fechaFin, yearColor, pctCompletado) {
+  function ganttTimeline(nombre, fechaIni, fechaFin, yearColor, pctCompletado, estado) {
     var dateStart = parseDate(fechaIni);
     var dateEnd = parseDate(fechaFin);
+    if (!Number.isFinite(dateStart.getTime())) dateStart = new Date();
+    if (!Number.isFinite(dateEnd.getTime())) dateEnd = new Date();
 
     // Escala: 2022-01-01 a 2026-12-31
     var scaleStart = new Date(2022, 0, 1);
@@ -613,13 +652,19 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     var leftPct = (startOffset / totalDays) * 100;
     var widthPct = (duration / totalDays) * 100;
     var pct = parseInt(pctCompletado) || 0;
+    var isStandBy = String(estado || '').toLowerCase().indexOf('stand') >= 0;
+    var badge = isStandBy
+      ? '<span style="position:absolute;right:6px;top:4px;background:#555;color:white;font-size:0.7em;font-weight:700;padding:1px 6px;border-radius:10px;white-space:nowrap;z-index:2">Stand by</span>'
+      : '';
+    var pctLabel = (!isStandBy ? '<span style="font-size:0.7em;color:white;font-weight:700;white-space:nowrap;padding:0 4px">'+pct+'%</span>' : '');
 
     return '<div style="margin-bottom:8px">'
-      + '<div style="font-size:0.65em;color:#333;margin-bottom:2px">'+esc(nombre)+'</div>'
+      + '<div style="font-size:0.85em;color:#333;margin-bottom:4px">'+esc(nombre)+'</div>'
       + '<div style="background:#f0f0f0;border-radius:4px;height:24px;position:relative;border:1px solid #ddd;overflow:hidden">'
       + '<div style="position:absolute;left:'+leftPct+'%;width:'+widthPct+'%;height:100%;background:'+yearColor+';border-radius:3px;display:flex;align-items:center;justify-content:center">'
-      + '<span style="font-size:0.5em;color:white;font-weight:700;white-space:nowrap;padding:0 2px">'+pct+'%</span>'
+      + pctLabel
       + '</div>'
+      + badge
       + '</div>'
       + '</div>';
   }
@@ -637,12 +682,19 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
   function formatValue(value, signo, decimales) {
     if (!value && value !== 0 && value !== '0') return '—';
 
-    var num = parseFloat(value) || 0;
-    var dec = parseInt(decimales) || 0;
-    var formatted = num.toFixed(dec);
+    var num = parseFloat(value);
+    if (!Number.isFinite(num)) return String(value);
+
+    var dec = parseInt(decimales, 10);
+    if (Number.isNaN(dec) || dec < 0) dec = 0;
+
+    var formatted = num.toLocaleString('es-CO', {
+      minimumFractionDigits: dec,
+      maximumFractionDigits: dec,
+    });
 
     // Aplicar signo según tipo
-    switch(String(signo).toUpperCase()) {
+    switch (String(signo).toUpperCase()) {
       case '%':
         return formatted + '%';
       case '$':
@@ -663,21 +715,22 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     var metaFormato = formatValue(meta, metaSigno, decMeta);
     var ejecFormato = formatValue(ejecucion, ejecSigno, decEjec);
 
-    return '<tr style="border-bottom:1px solid #eee;height:30px">'
-      + '<td style="padding:6px 8px;font-size:0.8em;color:#333">'+esc(indicador)+'</td>'
-      + '<td style="padding:6px 8px;font-size:0.8em;text-align:right;color:#666">'+metaFormato+'</td>'
-      + '<td style="padding:6px 8px;font-size:0.8em;text-align:right;color:#666">'+ejecFormato+'</td>'
-      + '<td style="padding:6px 8px;font-size:0.8em;text-align:center;font-weight:700;color:'+cumplColor+'">'+Math.round(cumplPct)+'%</td>'
+    return '<tr style="border-bottom:1px solid #eee;height:38px">'
+      + '<td style="padding:8px 10px;font-size:1em;color:#333">'+esc(indicador)+'</td>'
+      + '<td style="padding:8px 10px;font-size:1em;text-align:right;color:#666">'+metaFormato+'</td>'
+      + '<td style="padding:8px 10px;font-size:1em;text-align:right;color:#666">'+ejecFormato+'</td>'
+      + '<td style="padding:8px 10px;font-size:1em;text-align:center;font-weight:700;color:'+cumplColor+'">'+Math.round(cumplPct)+'%</td>'
       + '</tr>';
   }
 
   /* Función auxiliar: badge de avance (icono + valor) para el panel Retos */
   function retoBadge(color, icon, valor, label) {
+    var textColor = '#ffffff';
     return '<div style="flex:1;display:flex;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.08)">'
       + '<div style="width:34px;flex-shrink:0;background:'+color+'20;display:flex;align-items:center;justify-content:center"><i class="fas '+icon+'" style="color:'+color+';font-size:1em"></i></div>'
       + '<div style="flex:1;background:#0F385A;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 4px">'
-      + '<div style="font-size:0.95em;font-weight:900;color:'+color+'">'+valor+'%</div>'
-      + '<div style="font-size:0.5em;color:'+color+';font-weight:700;text-transform:uppercase;letter-spacing:0.3px;text-align:center;line-height:1.2">'+label+'</div>'
+      + '<div style="font-size:0.95em;font-weight:900;color:'+textColor+'">'+valor+'%</div>'
+      + '<div style="font-size:0.5em;color:'+textColor+';font-weight:700;text-transform:uppercase;letter-spacing:0.3px;text-align:center;line-height:1.2">'+label+'</div>'
       + '</div></div>';
   }
 
@@ -710,6 +763,13 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
       var linea_proy = String(p['4. Líneas estratégicas'] || '').toLowerCase();
       return linea_proy.includes(pmoBuscar.toLowerCase());
     });
+    lineaProyectos.sort(function(a, b) {
+      var fa = parseDate(a.Fin || '');
+      var fb = parseDate(b.Fin || '');
+      var da = Number.isFinite(fa.getTime()) ? fa.getTime() : Infinity;
+      var db = Number.isFinite(fb.getTime()) ? fb.getTime() : Infinity;
+      return da - db || String(a['Nombre del proyecto'] || '').localeCompare(String(b['Nombre del proyecto'] || ''));
+    });
 
     /* Filtrar CMI estrategico por línea */
     var cmi_all = window.PDI_DATA.cmi_estrategico || [];
@@ -717,6 +777,21 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     var lineaCMI = cmi_all.filter(function(c) {
       var linea_cmi = String(c.Linea || '').toLowerCase();
       return linea_cmi.includes(cmiBuscar.toLowerCase());
+    });
+    var cmiOrder = {};
+    var lineHasOrder = lineaCMI.some(function(c) {
+      var orderValue = parseInt(c.orden || c.Orden, 10);
+      return Number.isFinite(orderValue);
+    });
+    lineaCMI.forEach(function(c, idx) {
+      var key = c.Llave || c.Id || idx;
+      var orderValue = parseInt(c.orden || c.Orden, 10);
+      if (Number.isFinite(orderValue)) {
+        cmiOrder[key] = orderValue;
+      } else {
+        // Si hay algún orden definido en esta línea, los indicadores sin orden se muestran al final.
+        cmiOrder[key] = lineHasOrder ? Infinity : idx + 1;
+      }
     });
 
     h += '<div class="slide" id="slide-'+slideId+'" data-title="'+esc(lname)+'"><div class="sf" style="background:#f7faff;display:flex;flex-direction:column;">';
@@ -778,7 +853,7 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
         var finParts = String(p.Fin||'').split('/');
         var year = finParts[2] || '2025';
         var yearColor = yearColors[year] || '#999';
-        h += ganttTimeline(p['Nombre del proyecto'], p.Comienzo||'', p.Fin||'', yearColor, p['% completado']||'');
+        h += ganttTimeline(p['Nombre del proyecto'], p.Comienzo||'', p.Fin||'', yearColor, p['% completado']||'', p['0. Estado del proyecto']||'');
       });
     } else {
       h += '<div style="color:#aaa;font-size:0.65em;padding:8px">Sin proyectos disponibles</div>';
@@ -802,7 +877,7 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     var cmiWidth = objetivosUnicos.length === 1 ? '60%' : '100%';
     var cmiMargin = objetivosUnicos.length === 1 ? '0 auto' : '0';
 
-    h += '<div style="text-align:center;background:'+lineColor+';color:'+textColor+';font-weight:900;padding:6px;border-radius:6px;margin-bottom:10px;font-size:0.7em;text-transform:uppercase;width:'+cmiWidth+';margin-left:'+(objetivosUnicos.length === 1 ? 'auto' : '0')+';margin-right:'+(objetivosUnicos.length === 1 ? 'auto' : '0')+';box-sizing:border-box">CMI Estratégico</div>';
+    h += '<div style="text-align:center;background:'+lineColor+';color:'+textColor+';font-weight:900;padding:8px 10px;border-radius:6px;margin-bottom:12px;font-size:0.95em;text-transform:uppercase;width:'+cmiWidth+';margin-left:'+(objetivosUnicos.length === 1 ? 'auto' : '0')+';margin-right:'+(objetivosUnicos.length === 1 ? 'auto' : '0')+';box-sizing:border-box">CMI Estratégico</div>';
 
     /* Grid: 1 columna si hay 1 objetivo, 2 columnas si hay 2 */
     var gridCols = objetivosUnicos.length === 1 ? '1fr' : '1fr 1fr';
@@ -811,21 +886,20 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     objetivosUnicos.forEach(function(obj) {
       var indObjeto = lineaCMI.filter(function(c) { return c.Objetivo === obj; });
 
-      /* Ordenar por cumplimiento (mayor a menor) */
       indObjeto.sort(function(a, b) {
-        var cumplA = parseFloat(a.Cumplimiento) || 0;
-        var cumplB = parseFloat(b.Cumplimiento) || 0;
-        return cumplB - cumplA;
+        var oa = cmiOrder[a.Llave || a.Id] !== undefined ? cmiOrder[a.Llave || a.Id] : 0;
+        var ob = cmiOrder[b.Llave || b.Id] !== undefined ? cmiOrder[b.Llave || b.Id] : 0;
+        return oa - ob;
       });
 
       h += '<div>';
-      h += '<div style="background:'+lineColor+';color:'+textColor+';padding:6px 10px;font-weight:800;font-size:0.7em;border-radius:4px;margin-bottom:8px;text-transform:uppercase;word-wrap:break-word;overflow-wrap:break-word;text-align:center">'+esc(obj)+'</div>';
-      h += '<table style="width:100%;border-collapse:collapse;font-size:0.8em">';
-      h += '<tr style="background:#f0f4f8;border-bottom:2px solid #ddd;height:26px">';
-      h += '<th style="padding:6px 8px;text-align:left;font-weight:700;font-size:0.8em">Indicador</th>';
-      h += '<th style="padding:6px 8px;text-align:right;font-weight:700;font-size:0.8em">Meta</th>';
-      h += '<th style="padding:6px 8px;text-align:right;font-weight:700;font-size:0.8em">Ejecución</th>';
-      h += '<th style="padding:6px 8px;text-align:center;font-weight:700;font-size:0.8em">Cumplimiento</th>';
+      h += '<div style="background:'+lineColor+';color:'+textColor+';padding:8px 12px;font-weight:800;font-size:0.95em;border-radius:4px;margin-bottom:10px;text-transform:uppercase;word-wrap:break-word;overflow-wrap:break-word;text-align:center">'+esc(obj)+'</div>';
+      h += '<table style="width:100%;border-collapse:collapse;font-size:1em">';
+      h += '<tr style="background:#f0f4f8;border-bottom:2px solid #ddd;height:32px">';
+      h += '<th style="padding:8px 10px;text-align:left;font-weight:700;font-size:0.95em">Indicador</th>';
+      h += '<th style="padding:8px 10px;text-align:right;font-weight:700;font-size:0.95em">Meta</th>';
+      h += '<th style="padding:8px 10px;text-align:right;font-weight:700;font-size:0.95em">Ejecución</th>';
+      h += '<th style="padding:8px 10px;text-align:center;font-weight:700;font-size:0.95em">Cumplimiento</th>';
       h += '</tr>';
       indObjeto.forEach(function(ind) {
         h += cmiRow(ind.Indicador, ind.Meta, ind.Ejecucion, ind.Cumplimiento,
@@ -836,7 +910,7 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
     });
 
     if (objetivosUnicos.length === 0) {
-      h += '<div style="color:#aaa;font-size:0.65em;padding:20px;text-align:center">Sin indicadores CMI disponibles</div>';
+      h += '<div style="color:#aaa;font-size:0.85em;padding:20px;text-align:center">Sin indicadores CMI disponibles</div>';
     }
 
     h += '</div>';
@@ -1376,26 +1450,46 @@ body{background:#f0f4f8;font-family:'Montserrat',sans-serif;overflow:hidden;heig
   /* ===== PROYECTOS (PMO 2022-2025, TABS por línea) ===== */
   (function(){
     /* ── Helpers ── */
+    function parsePmoDate(value) {
+      var v = String(value || '').trim();
+      if (!v) return null;
+      if (/^\d+$/.test(v)) {
+        var serial = parseInt(v, 10);
+        var jsTime = Math.round((serial - 25569) * 86400 * 1000);
+        return new Date(jsTime);
+      }
+      var pts = v.split('/');
+      if (pts.length===3) {
+        return new Date(parseInt(pts[2], 10), parseInt(pts[1], 10) - 1, parseInt(pts[0], 10));
+      }
+      return null;
+    }
     function getComienzYear(p) {
-      var c = (p['Comienzo']||'').split('/');
-      return c.length===3 ? parseInt(c[2]) : 0;
+      var d = parsePmoDate(p['Comienzo']);
+      return d && Number.isFinite(d.getTime()) ? d.getFullYear() : 0;
     }
     function fmtDate(d) {
-      if (!d) return '—';
-      var pts = d.split('/');
-      if (pts.length!==3) return d;
+      var date = parsePmoDate(d);
+      if (!date || !Number.isFinite(date.getTime())) return '—';
       var ms=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-      return pts[0]+' '+ms[(parseInt(pts[1])-1)||0]+' '+pts[2];
+      return date.getDate() + ' ' + ms[date.getMonth()] + ' ' + date.getFullYear();
     }
     function getPct(p) { return parseInt(p['% completado']||'0')||0; }
     var GANTT_START = 2022, GANTT_END = 2027, GANTT_MONTHS = (2027-2022)*12;
     function toGanttPct(dateStr) {
-      var pts = (dateStr||'').split('/');
-      if (pts.length!==3) return null;
-      var m = (parseInt(pts[2])-GANTT_START)*12 + (parseInt(pts[1])-1) + parseInt(pts[0])/31;
+      var date = parsePmoDate(dateStr);
+      if (!date || !Number.isFinite(date.getTime())) return null;
+      var m = (date.getFullYear()-GANTT_START)*12 + date.getMonth() + date.getDate()/31;
       return Math.min(100, Math.max(0, m/GANTT_MONTHS*100));
     }
+    var standByProjectNames = {
+      'centro de idiomas poli': true,
+      'colegio virtual': true,
+      'institución de educación para el trabajo y desarrollo humano ietdh': true
+    };
     function getEstado(p) {
+      var name = String(p['Nombre del proyecto']||'').trim().toLowerCase();
+      if (standByProjectNames[name]) return {col:'#aaa', tc:'white', lbl:'Stand by'};
       var s = (p['0. Estado del proyecto']||'').toLowerCase();
       if (s.indexOf('finalizado')>=0) return {col:'#A6CE38', tc:'var(--navy)', lbl:'Finalizado'};
       if (s.indexOf('cierre')>=0)     return {col:'#15BECE', tc:'var(--navy)', lbl:'Cierre'};
